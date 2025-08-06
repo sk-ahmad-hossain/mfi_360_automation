@@ -1,0 +1,35 @@
+import { test } from '@playwright/test';
+import { Login } from '../../pages/login-page';
+import { AdvanceReturnAnalysisPage } from '../../pages/advance_return_analysis.page';
+import { ReportType } from '../../pages/common/return_type.component';
+
+test.setTimeout(60000);
+test('Verify P2P report generation', async ({ page }) => {
+    const login = new Login(page);
+    const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
+    const advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
+
+    await login.login();
+
+    await advanceReturnAnalysisPage.open();
+
+    // schema selection
+    await advanceReturnAnalysisPage.schemaSelection.searchScheme(schemeName);
+    await advanceReturnAnalysisPage.schemaSelection.selectScheme(schemeName);
+
+    // report type selection    
+    await advanceReturnAnalysisPage.reportTypeSection.selectReportType(ReportType.P2P);
+    await advanceReturnAnalysisPage.reportTypeSection.selectToDate("25 Jul 2025")
+    await advanceReturnAnalysisPage.reportTypeSection.selectPeriods(["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year"]);
+    await advanceReturnAnalysisPage.reportTypeSection.selectSettingSet("abs");
+    await advanceReturnAnalysisPage.reportTypeSection.checkLastDayOfMonth();
+    await advanceReturnAnalysisPage.reportTypeSection.checkSchemeWithIndex();
+
+    //Other Criteria
+
+
+    //show report
+    await advanceReturnAnalysisPage.clickShowReport();
+
+    //await page.waitForTimeout(30000)
+});
