@@ -1,6 +1,6 @@
 import { expect } from "playwright/test";
-import { SchemaSelectionComponent } from "./common/schema_selection.component";
-import { ReportReturnType, ReportType } from "./common/return_type.component";
+import { SchemaSelectionComponent } from "pages/common/schema_selection.component";
+import { ReportReturnType } from "@pages/common/return_type.component";
 
 export class AdvanceReturnAnalysisPage {
     schemaSelection: SchemaSelectionComponent;
