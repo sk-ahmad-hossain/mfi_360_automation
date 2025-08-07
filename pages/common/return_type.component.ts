@@ -1,11 +1,6 @@
 //import ReportType
 
-export enum ReportType {
-    P2P = '#lblP2P',
-    Rolling = "#lblRolling",
-    FixedPeriodic = "#lblFixed",
-    MultipleDate = "//input[@id='rdoBoth']/..",
-}
+import { ReportType } from "@type/report-type";
 
 export class ReportReturnType {
     private page: any;

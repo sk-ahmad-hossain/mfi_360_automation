@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
-import { Login } from '../../pages/login-page';
-import { AdvanceReturnAnalysisPage } from '../../pages/advance_return_analysis.page';
-import { ReportType } from '../../pages/common/return_type.component';
+import { Login } from '@pages/login-page';
+import { AdvanceReturnAnalysisPage } from '@pages/advance_return_analysis.page';
+import { ReportType } from '@type/report-type';
 
 test.setTimeout(60000);
 test('Verify P2P report generation', async ({ page }) => {

@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
-import { Login } from '../../pages/login-page';
+import { test } from '@playwright/test';
+import { Login } from '@pages/login-page';
 
 test.skip('login test', async ({ page }) => {
   const login = new Login(page);
