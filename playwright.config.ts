@@ -18,6 +18,7 @@ export default defineConfig({
     video: 'on',
     navigationTimeout: 60000,
     actionTimeout: 60000,
+    baseURL: "https://mfi360web-it2.icraanalytics.co.in:8443",
     
     trace: 'on-first-retry',
   },

@@ -16,7 +16,7 @@ export class AdvanceReturnAnalysisPage {
     }
 
     async open() {
-        await this.page.goto("https://mfi360web-it2.icraanalytics.co.in:8443/SchemePerformance/Advance")
+        await this.page.goto("/SchemePerformance/Advance")
         await expect(this.page.locator('div.page-title h3')).toContainText('Advanced Return Analysis');
     }
 
