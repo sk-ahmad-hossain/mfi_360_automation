@@ -4,8 +4,8 @@ import { AdvanceReturnAnalysisPage } from '@pages/advance_return_analysis.page';
 import { ReportType } from '@type/report-type';
 
 test.setTimeout(60000);
-test('Verify P2P report generation', async ({ page }) => {
-    const login = new Login(page);
+test('Verify P2P report generation', async ({ page }, testInfo) => {
+    const login = new Login(page, testInfo);
     const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
     const advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
 

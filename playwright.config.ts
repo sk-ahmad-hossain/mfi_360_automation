@@ -27,6 +27,10 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
+      metadata: {
+        username: "ahmad.hossain@icraanalytics.com",
+        password: "IatP@941"
+      }
     },
     // Uncomment below to enable Firefox or WebKit
     // {
