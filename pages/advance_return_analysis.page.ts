@@ -9,7 +9,7 @@ export class AdvanceReturnAnalysisPage {
     reportTypeSection: ReportReturnType;
     otherCriteria: OtherCriteria;
     index : Index;
-    private showReportSelector: string = "(#ShowPerformanceReturn,'Show Report')";
+    private showReportSelector: string = "#ShowPerformanceReturn";
     page: any;
 
     constructor(page: any) {
@@ -17,6 +17,8 @@ export class AdvanceReturnAnalysisPage {
 
         this.schemaSelection = new SchemaSelectionComponent(page);
         this.reportTypeSection = new ReportReturnType(page);
+        this.index = new Index(page);
+        this.otherCriteria = new OtherCriteria(page);
     }
 
     async open() {
@@ -24,12 +26,8 @@ export class AdvanceReturnAnalysisPage {
         await expect(this.page.locator('div.page-title h3')).toContainText('Advanced Return Analysis');
     }
 
-    async clickShowReport(): Promise<void> {
-        try {
-            await this.page.waitForSelector(this.showReportSelector, { state: 'visible' });
-            await this.page.click(this.showReportSelector);
-        } catch (error) {
-            console.error('Failed to click Show Report button:', error);
-        }
+    async clickShowReport(){
+        await this.page.waitForSelector(this.showReportSelector, { state: 'visible' });
+        await this.page.click(this.showReportSelector);
     }
 }

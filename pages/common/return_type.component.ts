@@ -10,22 +10,26 @@ export class ReportReturnType {
     periods_options:string = "//li//span[text()='%s']/..";
     scheme_with_index_check = "//span[text()='Scheme with Index']/preceding-sibling::fieldset"
     last_day_of_month_check = "//span[text()='Last Day of Month']/preceding-sibling::fieldset";
+    first_day_of_the_month = "//span[text()='First Day of Month']/preceding-sibling::fieldset";
+    with_calculation_date = "//span[text()='With Calculation Date']/preceding-sibling::fieldset";
+    since_inception = "//span[text()='Since Inception (Scheme)']/preceding-sibling::fieldset";
 
+    reportType: ReportType;
     constructor(page: any) {
         this.page = page;
     }
 
     async selectReportType(reportType: ReportType) {
-        this.page.click(reportType);
+        this.reportType = reportType;
+        await this.page.click(reportType);
     }
 
     async selectToDate(date: string) {
         await this.page.fill(this.return_type_date, date);
-        //await this.page.keyboard.press('Enter');
         await this.page.locator(this.return_type_date).press('Enter');
     }
 
-    async selectPeriods(periods: string[]) {
+    async selectPeriodsForP2P(periods: string[]) {
         const periodDropdown = this.page.locator(this.period_dropdown);
         const searchField = this.page.locator(this.period_search_field);
 
@@ -46,15 +50,29 @@ export class ReportReturnType {
         await periodDropdown.click();
     }
 
+    async selectPeriodForRolling(count: number, dayOrMonth: string) {
+        console.log(await this.page);
+        
+        const period = await this.page.locator("#txtRollingPeriod");
+        await period.fill(count.toString())
+        if(dayOrMonth.toLocaleLowerCase() == "days")
+            this.page.click("label[ng-class=PeriodDaysClass]")
+        else {
+            this.page.click("label[ng-class=PeriodMonthClass]")
+        }
+    }
+
+    async selectFrequency(count: number, dayOrMonth: string) {
+        await this.page.fill("#txtRollingFreq", count.toString())
+        if (dayOrMonth.toLocaleLowerCase() == 'days')
+            await this.page.click("label[ng-class='FreqDaysClass']");
+        else
+            await this.page.click("label[ng-class='FreqMonthClass']");
+    }
+
     async selectSettingSet(settingSet: string) {
         const settingSetDropdown = this.page.locator('#DrpSettingSet_chosen');
         await settingSetDropdown.click();
-        const searchField = this.page.locator("(//div[@class='chosen-search']//input)[2]");
-        
-        //await searchField.fill(settingSet);
-        //await this.page.keyboard.press('Enter');
-
-        //await this.page.waitForTimeout(5000);
         const settingOption = this.page.locator(`//ul[@class='chosen-results']//li[normalize-space()='${settingSet}']`);
         if (await settingOption.isVisible()) {
             await settingOption.click();
@@ -66,9 +84,34 @@ export class ReportReturnType {
     async checkLastDayOfMonth() {
         await this.page.click(this.last_day_of_month_check);
     }
+
     async checkSchemeWithIndex() {
         await this.page.click(this.scheme_with_index_check);
     }
+
+    async checkSinceInception() {
+        await this.page.click(this.since_inception);
+    }
+
+    async checkWithCalculationDate() {
+        await this.page.click(this.with_calculation_date);
+    }
+
+    async checkFirstDayOfTheMonth() {
+        await this.page.click(this.first_day_of_the_month)
+    }
+
+    // get rolling() {
+    //     return {
+    //         selectPeriod: this.selectPeriodForRolling,
+    //         selectFrequency: this.selectFrequency,
+    //         selectSettingSet: this.selectSettingSet,
+    //         checkLastDayOfMonth: this.checkLastDayOfMonth,
+    //         firstDayOfTheMonth: this.firstDayOfTheMonth,
+    //         checkWithCalculationDate: this.checkWithCalculationDate,
+    //         checkSinceInception: this.checkSinceInception
+    //     }
+    // }
     
 }
 
