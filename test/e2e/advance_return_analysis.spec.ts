@@ -20,7 +20,7 @@ test('Verify P2P report generation', async ({ page }, testInfo) => {
     // report type selection    
     await advanceReturnAnalysisPage.reportTypeSection.selectReportType(ReportType.P2P);
     await advanceReturnAnalysisPage.reportTypeSection.selectToDate("25 Jul 2025")
-    await advanceReturnAnalysisPage.reportTypeSection.selectPeriods(["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year"]);
+    await advanceReturnAnalysisPage.reportTypeSection.selectPeriodsForP2P(["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year"]);
     await advanceReturnAnalysisPage.reportTypeSection.selectSettingSet("abs");
     await advanceReturnAnalysisPage.reportTypeSection.checkLastDayOfMonth();
     await advanceReturnAnalysisPage.reportTypeSection.checkSchemeWithIndex();
@@ -68,3 +68,32 @@ test("Verify 'Rolling' report generation", async ({page}, testInfo) => {
     await page.waitForLoadState()
     await page.waitForTimeout(60000)
 });
+
+test('Verify "Fixed Periodic" report generation for return type ', async ({page}, testInfo) => {
+    const login = new Login(page, testInfo);
+    const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
+    const advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
+
+    await login.login();
+
+    await advanceReturnAnalysisPage.open();
+
+    // schema selection
+    await advanceReturnAnalysisPage.schemaSelection.searchScheme(schemeName);
+    await advanceReturnAnalysisPage.schemaSelection.selectScheme(schemeName);
+
+   // report FixedPeriodic type selection    
+    await advanceReturnAnalysisPage.reportTypeSection.selectReportType(ReportType.FixedPeriodic);
+    await advanceReturnAnalysisPage.reportTypeSection.selectPeriodsForFixed("YoY")
+    await advanceReturnAnalysisPage.reportTypeSection.selectSettingSet("abs");
+
+    // other criteria
+    await advanceReturnAnalysisPage.otherCriteria.search("52 Week High")
+    await advanceReturnAnalysisPage.otherCriteria.select("52 Week High")
+    await advanceReturnAnalysisPage.otherCriteria.checkShowMinMaxAvg();
+
+    await advanceReturnAnalysisPage.clickShowReport();
+
+    await page.waitForLoadState()
+    await page.waitForTimeout(30000)
+})

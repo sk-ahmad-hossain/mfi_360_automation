@@ -14,6 +14,8 @@ export class ReportReturnType {
     with_calculation_date = "//span[text()='With Calculation Date']/preceding-sibling::fieldset";
     since_inception = "//span[text()='Since Inception (Scheme)']/preceding-sibling::fieldset";
 
+    fixed_period_dropdown = "#DrpFixedPeriod";
+
     reportType: ReportType;
     constructor(page: any) {
         this.page = page;
@@ -48,6 +50,25 @@ export class ReportReturnType {
         }
         searchField.clear();
         await periodDropdown.click();
+    }
+    async selectPeriodsForFixed(period: string) {
+        //const dropdown = this.page.locator('#DrpFixedPeriod');
+        //await dropdown.selectOption(period);
+
+        const periodDropdown = this.page.locator("#DrpFixedPeriod_chosen");
+        await periodDropdown.click();
+
+        const option_selector = "//ul//li[text()='%s']";
+        //const searchField = this.page.locator(this.period_search_field);
+        //await searchField.clear();
+        //await searchField.fill(period);
+
+        const periodLocator = await this.page.locator(option_selector.replace('%s', period));
+        if (await periodLocator.isVisible()) {
+            await periodLocator.click();
+        } else {
+            console.warn(`Period ${period} not found in the dropdown.`);
+        }
     }
 
     async selectPeriodForRolling(count: number, dayOrMonth: string) {
@@ -100,6 +121,12 @@ export class ReportReturnType {
     async checkFirstDayOfTheMonth() {
         await this.page.click(this.first_day_of_the_month)
     }
+    async addbutton(){
+        await this.page.click("//button[normalize-space()='Add']");
+
+
+    }
+    
 
     // get rolling() {
     //     return {

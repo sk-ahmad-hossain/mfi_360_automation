@@ -30,7 +30,13 @@ export class OtherCriteria {
         await this.page.click(indexNameLocator);
     }
 
-    async checkShowMinMaxAvgRolling() {
+    async checkShowMinMaxAvgP2P() {
+        await this.page.waitForSelector(this.check_min_max_avg_std_rolling);
+        await this.page.click(this.check_min_max_avg_std_rolling);
+    }
+
+    // todo check method
+    async checkShowMinMaxAvg() {
         await this.page.waitForSelector(this.check_min_max_avg_std_rolling);
         await this.page.click(this.check_min_max_avg_std_rolling);
     }
