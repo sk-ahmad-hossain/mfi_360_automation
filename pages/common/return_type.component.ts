@@ -15,6 +15,8 @@ export class ReportReturnType {
     since_inception = "//span[text()='Since Inception (Scheme)']/preceding-sibling::fieldset";
 
     fixed_period_dropdown = "#DrpFixedPeriod";
+    periods_options_multi:string="#txtMulDateRollingPeriod";
+    Select_frequency_multi: string ="#txtMulDateRollingFreq";
 
     reportType: ReportType;
     constructor(page: any) {
@@ -121,11 +123,40 @@ export class ReportReturnType {
     async checkFirstDayOfTheMonth() {
         await this.page.click(this.first_day_of_the_month)
     }
+
+     async periods_options_mult(count: number, dayOrMonth: string) {
+        console.log(await this.page);
+        
+        const period = await this.page.locator("#txtMulDateRollingPeriod");
+        await period.fill(count.toString())
+        if(dayOrMonth.toLocaleLowerCase() == "days")
+            this.page.click("//div[@class='btn btn-success btn-xs active']")
+        else {
+            this.page.click("//div[@class='btn btn-success btn-xs active focus']")
+        }
+    }
+    async select_frequency_multi(count: number, dayOrMonth: string) {
+        await this.page.fill("#txtMulDateRollingFreq", count.toString())
+        if (dayOrMonth.toLocaleLowerCase() == 'days')
+            await this.page.click("//div[@class='btn btn-success btn-xs active']");
+        else
+            await this.page.click("//div[@class='btn btn-success btn-xs'][normalize-space()='Month']");
+    }
+
+    
+
+    
     async addbutton(){
-        await this.page.click("//button[normalize-space()='Add']");
+        await this.page.click(".btn.btn-success.pull-right.btn-xs");
 
 
     }
+    
+    async selectReportTypeForMultiple(type : string) {
+        const dropdown = this.page.locator("[ng-model='SelectedReturnId']")
+        await dropdown.selectOption('Both');
+    }
+
     
 
     // get rolling() {

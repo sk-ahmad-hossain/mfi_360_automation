@@ -69,7 +69,7 @@ test("Verify 'Rolling' report generation", async ({page}, testInfo) => {
     await page.waitForTimeout(60000)
 });
 
-test('Verify "Fixed Periodic" report generation for return type ', async ({page}, testInfo) => {
+test('Verify "Fixed Periodic" report generation for return type', async ({page}, testInfo) => {
     const login = new Login(page, testInfo);
     const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
     const advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
@@ -96,4 +96,36 @@ test('Verify "Fixed Periodic" report generation for return type ', async ({page}
 
     await page.waitForLoadState()
     await page.waitForTimeout(30000)
+})
+
+test('Verify "multiple date"report generation ', async ({page}, testInfo) => { 
+    const reportTypes = [
+        { type: "Both", period: 5, periodType: "days", frequency: 5, frequencyType: "days", dateRange: "1 July 2025 - 15 July 2025" }
+    ]
+    const login = new Login(page, testInfo);
+    const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
+    const advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
+
+    await login.login();
+
+    await advanceReturnAnalysisPage.open();
+
+    // schema selection
+    await advanceReturnAnalysisPage.schemaSelection.searchScheme(schemeName);
+    await advanceReturnAnalysisPage.schemaSelection.selectScheme(schemeName);
+
+   // report FixedPeriodic type selection    
+    await advanceReturnAnalysisPage.reportTypeSection.selectReportType(ReportType.MultipleDate);
+    reportTypes.forEach(async (report) => {
+        await advanceReturnAnalysisPage.reportTypeSection.selectReportTypeForMultiple(report.type);
+        await advanceReturnAnalysisPage.reportTypeSection.periods_options_mult(report.period, report.periodType)
+        await advanceReturnAnalysisPage.reportTypeSection.select_frequency_multi(report.frequency, report.frequencyType)
+        await advanceReturnAnalysisPage.reportTypeSection.addbutton();
+    })
+
+    await advanceReturnAnalysisPage.reportTypeSection.selectSettingSet("abs");
+    await advanceReturnAnalysisPage.reportTypeSection.checkSchemeWithIndex();
+    await advanceReturnAnalysisPage.clickShowReport();
+    
+    await page.waitForTimeout(3000)
 })
