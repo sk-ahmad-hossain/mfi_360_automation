@@ -1,10 +1,14 @@
 import { expect } from "playwright/test";
 import { SchemaSelectionComponent } from "pages/common/schema_selection.component";
 import { ReportReturnType } from "@pages/common/return_type.component";
+import { Index } from "@pages/common/Index.component";
+import { OtherCriteria } from "@pages/common/other_criteria.component";
 
 export class AdvanceReturnAnalysisPage {
     schemaSelection: SchemaSelectionComponent;
     reportTypeSection: ReportReturnType;
+    otherCriteria: OtherCriteria;
+    index : Index;
     private showReportSelector: string = "(#ShowPerformanceReturn,'Show Report')";
     page: any;
 
