@@ -11,6 +11,7 @@ export default defineConfig({
 
   reporter: [
     ['list'],
+    ['html', { open: 'never', host: '0.0.0.0', port: 9223 }]
   ],
 
   use: {
@@ -35,8 +36,8 @@ export default defineConfig({
         viewport: null
       },
       metadata: {
-        username: "",
-        password: ""
+        username: "ahmad.hossain@icraanalytics.com",
+        password: "Axcz@543"
       }
     },
     // Uncomment below to enable Firefox or WebKit
