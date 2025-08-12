@@ -74,8 +74,6 @@ export class ReportReturnType {
     }
 
     async selectPeriodForRolling(count: number, dayOrMonth: string) {
-        console.log(await this.page);
-        
         const period = await this.page.locator("#txtRollingPeriod");
         await period.fill(count.toString())
         if(dayOrMonth.toLocaleLowerCase() == "days")
@@ -94,14 +92,12 @@ export class ReportReturnType {
     }
 
     async selectSettingSet(settingSet: string) {
-        const settingSetDropdown = this.page.locator('#DrpSettingSet_chosen');
+        const selector = '#DrpSettingSet_chosen a';
+        await this.page.waitForSelector(selector, { state: 'visible' });
+        const settingSetDropdown = this.page.locator(selector);
         await settingSetDropdown.click();
         const settingOption = this.page.locator(`//ul[@class='chosen-results']//li[normalize-space()='${settingSet}']`);
-        if (await settingOption.isVisible()) {
-            await settingOption.click();
-        } else {
-            console.warn(`Setting set ${settingSet} not found in the dropdown.`);
-        }
+        await settingOption.click();
     }
 
     async checkLastDayOfMonth() {
@@ -125,8 +121,6 @@ export class ReportReturnType {
     }
 
      async periods_options_mult(count: number, dayOrMonth: string) {
-        console.log(await this.page);
-        
         const period = await this.page.locator("#txtMulDateRollingPeriod");
         await period.fill(count.toString())
         if(dayOrMonth.toLocaleLowerCase() == "days")
@@ -144,32 +138,17 @@ export class ReportReturnType {
     }
 
     
-
-    
-    async addbutton(){
-        await this.page.click(".btn.btn-success.pull-right.btn-xs");
-
-
+    async addReporType() {
+        const selector = ".btn.btn-success.pull-right.btn-xs";
+        await this.page.waitForSelector(selector, { state: 'visible' });
+        await this.page.click(selector);
     }
     
     async selectReportTypeForMultiple(type : string) {
-        const dropdown = this.page.locator("[ng-model='SelectedReturnId']")
+        const selector = "[ng-model='SelectedReturnId']";
+        await this.page.waitForSelector(selector, { state: 'visible' });
+        const dropdown = this.page.locator(selector);
         await dropdown.selectOption('Both');
-    }
-
-    
-
-    // get rolling() {
-    //     return {
-    //         selectPeriod: this.selectPeriodForRolling,
-    //         selectFrequency: this.selectFrequency,
-    //         selectSettingSet: this.selectSettingSet,
-    //         checkLastDayOfMonth: this.checkLastDayOfMonth,
-    //         firstDayOfTheMonth: this.firstDayOfTheMonth,
-    //         checkWithCalculationDate: this.checkWithCalculationDate,
-    //         checkSinceInception: this.checkSinceInception
-    //     }
-    // }
-    
+    }    
 }
 

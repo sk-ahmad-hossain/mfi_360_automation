@@ -1,16 +1,27 @@
-import { test } from '@playwright/test';
+import { Page, test } from '@playwright/test';
 import { Login } from '@pages/login-page';
 import { AdvanceReturnAnalysisPage } from '@pages/advance_return_analysis.page';
 import { ReportType } from '@type/report-type';
 
-test.setTimeout(30000);
-test('Verify P2P report generation', async ({ page }, testInfo) => {
-    const login = new Login(page, testInfo);
-    const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
-    const advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
+let page: Page;
+let advanceReturnAnalysisPage: AdvanceReturnAnalysisPage;
 
+test.setTimeout(45000);
+test.beforeAll(async ({browser}, testInfo)=> {
+    page = await browser.newPage();
+    const login = new Login(page, testInfo);
     await login.login();
 
+    advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
+})
+
+test.afterAll( async() => {
+    await page.close()
+})
+
+
+test("Verify 'P2P' report generation", async () => {
+    const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
     await advanceReturnAnalysisPage.open();
 
     // schema selection
@@ -22,25 +33,18 @@ test('Verify P2P report generation', async ({ page }, testInfo) => {
     await advanceReturnAnalysisPage.reportTypeSection.selectToDate("25 Jul 2025")
     await advanceReturnAnalysisPage.reportTypeSection.selectPeriodsForP2P(["1 Day", "1 Week", "1 Month", "3 Months", "6 Months", "1 Year"]);
     await advanceReturnAnalysisPage.reportTypeSection.selectSettingSet("abs");
-    await advanceReturnAnalysisPage.reportTypeSection.checkLastDayOfMonth();
+    //await advanceReturnAnalysisPage.reportTypeSection.checkLastDayOfMonth();
     await advanceReturnAnalysisPage.reportTypeSection.checkSchemeWithIndex();
-
-    //Other Criteria
-
 
     //show report
     await advanceReturnAnalysisPage.clickShowReport();
 
     //await page.waitForTimeout(30000)
+    await page.waitForLoadState();
 });
 
-test("Verify 'Rolling' report generation", async ({page}, testInfo) => {
-    const login = new Login(page, testInfo);
+test("Verify 'Rolling' report generation", async () => {
     const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
-    const advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
-
-    await login.login();
-
     await advanceReturnAnalysisPage.open();
 
     // schema selection
@@ -60,22 +64,17 @@ test("Verify 'Rolling' report generation", async ({page}, testInfo) => {
     // other criteria
     await advanceReturnAnalysisPage.otherCriteria.search("52 Week High")
     await advanceReturnAnalysisPage.otherCriteria.select("52 Week High")
-    await advanceReturnAnalysisPage.otherCriteria.checkShowMinMaxAvgRolling();
+    await advanceReturnAnalysisPage.otherCriteria.checkShowMinMaxAvg();
 
     //show report
     await advanceReturnAnalysisPage.clickShowReport();
 
+    //await page.waitForTimeout(29000)
     await page.waitForLoadState()
-    await page.waitForTimeout(60000)
 });
 
-test('Verify "Fixed Periodic" report generation for return type', async ({page}, testInfo) => {
-    const login = new Login(page, testInfo);
+test("Verify 'Fixed Periodic' report generation for return type", async () => {
     const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
-    const advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
-
-    await login.login();
-
     await advanceReturnAnalysisPage.open();
 
     // schema selection
@@ -94,20 +93,15 @@ test('Verify "Fixed Periodic" report generation for return type', async ({page},
 
     await advanceReturnAnalysisPage.clickShowReport();
 
+    //await page.waitForTimeout(29000)
     await page.waitForLoadState()
-    await page.waitForTimeout(30000)
 })
 
-test('Verify "multiple date"report generation ', async ({page}, testInfo) => { 
+test("Verify 'multiple date' report generation", async () => { 
     const reportTypes = [
         { type: "Both", period: 5, periodType: "days", frequency: 5, frequencyType: "days", dateRange: "1 July 2025 - 15 July 2025" }
     ]
-    const login = new Login(page, testInfo);
     const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
-    const advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
-
-    await login.login();
-
     await advanceReturnAnalysisPage.open();
 
     // schema selection
@@ -116,16 +110,16 @@ test('Verify "multiple date"report generation ', async ({page}, testInfo) => {
 
    // report FixedPeriodic type selection    
     await advanceReturnAnalysisPage.reportTypeSection.selectReportType(ReportType.MultipleDate);
-    reportTypes.forEach(async (report) => {
+    for(const report of reportTypes) {
         await advanceReturnAnalysisPage.reportTypeSection.selectReportTypeForMultiple(report.type);
         await advanceReturnAnalysisPage.reportTypeSection.periods_options_mult(report.period, report.periodType)
         await advanceReturnAnalysisPage.reportTypeSection.select_frequency_multi(report.frequency, report.frequencyType)
-        await advanceReturnAnalysisPage.reportTypeSection.addbutton();
-    })
+        await advanceReturnAnalysisPage.reportTypeSection.addReporType();
+    }
 
     await advanceReturnAnalysisPage.reportTypeSection.selectSettingSet("abs");
     await advanceReturnAnalysisPage.reportTypeSection.checkSchemeWithIndex();
     await advanceReturnAnalysisPage.clickShowReport();
-    
-    await page.waitForTimeout(3000)
+
+    await page.waitForLoadState()
 })

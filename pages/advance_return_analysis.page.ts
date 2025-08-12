@@ -23,6 +23,7 @@ export class AdvanceReturnAnalysisPage {
 
     async open() {
         await this.page.goto("/SchemePerformance/Advance")
+        await this.page.waitForLoadState()
         await expect(this.page.locator('div.page-title h3')).toContainText('Advanced Return Analysis');
     }
 
