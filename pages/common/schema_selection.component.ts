@@ -1,8 +1,8 @@
 export class SchemaSelectionComponent {
     schemaTypeDropdown: any;
-    searchSchemeInput: string = "(//input[contains(@placeholder,'Type Scheme Name')])[2]";
-    schemeLocator:string = "(//a[text()='%s']/../preceding-sibling::td//label)[2]";
-    selectAllCheck:string = "(//span[@id='scheme-selection-check-all'])[2]";
+    searchSchemeInput: string = "//input[contains(@placeholder,'Type Scheme Name')]";
+    schemeLocator:string = "//a[text()='%s']/../preceding-sibling::td//label";
+    selectAllCheck:string = "//span[@id='scheme-selection-check-all']";
     page: any;
 
     constructor(page: any) {

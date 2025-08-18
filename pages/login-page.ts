@@ -1,25 +1,26 @@
-export class Login {
-    usernameInput: any;
-    passwordInput: any;
-    loginButton: any;
-    page: any;
+import { TestInfo } from "playwright/test";
 
-    constructor(page: any) {
+export class Login {
+    usernameInput: string = "#TxtUserId";
+    passwordInput: string = "#TxtPwd";
+    loginButton: string = "#BtnSubmit";
+    page: any;
+    testInfo: TestInfo;
+
+    constructor(page: any, testInfo: TestInfo) {
         this.page = page;
-        this.usernameInput = '#TxtUserId';
-        this.passwordInput = '#TxtPwd';
-        this.loginButton = '#BtnSubmit';
+        this.testInfo = testInfo;
     }
 
     async login(username?:string, password?:string) {
         if (!username) {
-            username = 'ahmad.hossain@icraanalytics.com';
+            username = this.testInfo.project.metadata.username;
         }
         if (!password) {
-            password = 'IatP@941';
+            password = this.testInfo.project.metadata.password;
         }
 
-        await this.page.goto('https://mfi360web-it2.icraanalytics.co.in:8443/Account/Login');
+        await this.page.goto('/Account/Login');
         await this.page.fill(this.usernameInput, username);
         await this.page.fill(this.passwordInput, password);  
         await this.page.click(this.loginButton);

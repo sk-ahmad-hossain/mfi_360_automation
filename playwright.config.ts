@@ -5,10 +5,13 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  //workers: process.env.CI ? 1 : undefined,
+  workers: 1,
+  snapshotDir: "images",
 
   reporter: [
     ['list'],
+    ['html', { open: 'never', host: '0.0.0.0', port: 9223 }]
   ],
 
   use: {
@@ -18,6 +21,7 @@ export default defineConfig({
     video: 'on',
     navigationTimeout: 60000,
     actionTimeout: 60000,
+    baseURL: "https://mfi360web-it2.icraanalytics.co.in:8443",
     
     trace: 'on-first-retry',
   },
@@ -25,7 +29,16 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: { 
+        launchOptions: {
+          args: ["--start-maximized"]
+        },
+        viewport: null
+      },
+      metadata: {
+        username: "ahmad.hossain@icraanalytics.com",
+        password: "Axcz@543"
+      }
     },
     // Uncomment below to enable Firefox or WebKit
     // {
