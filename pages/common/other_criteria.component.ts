@@ -1,17 +1,32 @@
 export class OtherCriteria {
-    search_field = "#txtOtherCriteriaFilter";
-    select_all_check = "#chkOtherCriteriaAll > fieldset";
-    select_other_criteria = "//a[text()='%s']/../preceding-sibling::td/label"
-    Show_Rank="#chkShowRank > span";
-    Show_Quartile="#chkShowQuartile > span";
-    Show_Scheme_MIn_Max_Avg_P2P="#chkMinMaxAvg > span";
-    Show_Index_Min_Max_Avg_P2P="#chkIndexMinMaxAvg > span";
-    check_min_max_avg_std_rolling = "span[name=MinMaxAvg]"
-
-
+    private search_field = "#txtOtherCriteriaFilter";
+    private select_all_check = "#chkOtherCriteriaAll > fieldset";
+    private Show_Rank="#chkShowRank > span";
+    private Show_Quartile="#chkShowQuartile > span";
+    private Show_Scheme_MIn_Max_Avg_P2P="#chkMinMaxAvg > span";
+    private Show_Index_Min_Max_Avg_P2P="#chkIndexMinMaxAvg > span";
+    //private check_min_max_avg_std_rolling = "span[name=MinMaxAvg]"
     page: any;
-    constructor(page: any) {
+    title: string;
+
+    constructor(page: any, title: string) {
         this.page = page;
+        this.title = title;
+    }
+
+    readonly selector = {
+        "Index Performance Analysis" : {
+            select_other_criteria: "//td[text()='%s']/parent::tr//label",
+            check_scheme_min_max_avg: "span[name=ShowIndexMinMax]",
+            check_index_min_max_avg: "span[name=MinMaxAvg]",
+            check_min_max_avg: "span[name=MinMaxAvg]"
+        },
+        "Advanced Return Analysis": {
+            select_other_criteria : "//a[text()='%s']/../preceding-sibling::td/label",
+            check_scheme_min_max_avg: "span[name=MinMaxAvg]",
+            check_index_min_max_avg: "span[name=ShowIndexMinMax]",
+            check_min_max_avg: "span[name=MinMaxAvg]"
+        }
     }
 
     async search(criteria: string) {
@@ -25,21 +40,46 @@ export class OtherCriteria {
     }
 
     async select(criteria: string) {
-        const indexNameLocator = this.select_other_criteria.replace('%s', criteria);
+        const indexNameLocator = this
+            .selector[this.title]
+            .select_other_criteria
+            .replace('%s', criteria);
+
         await this.page.waitForSelector(indexNameLocator);
         await this.page.click(indexNameLocator);
     }
 
     async checkShowMinMaxAvgP2P() {
-        await this.page.waitForSelector(this.check_min_max_avg_std_rolling);
-        await this.page.click(this.check_min_max_avg_std_rolling);
+        await this.checkShowMinMaxAvg();
     }
 
-    // todo check method
     async checkShowMinMaxAvg() {
-        await this.page.waitForSelector(this.check_min_max_avg_std_rolling);
-        await this.page.click(this.check_min_max_avg_std_rolling);
+        const check_min_max_avg = this
+            .selector[this.title]
+            .check_min_max_avg;
+
+        await this.page.waitForSelector(check_min_max_avg);
+        await this.page.click(check_min_max_avg);
     }
+
+    async checkIndexShowMinMaxAvg() {
+        const check_min_max_avg = this
+            .selector[this.title]
+            .check_index_min_max_avg;
+
+        await this.page.waitForSelector(check_min_max_avg);
+        await this.page.click(check_min_max_avg);
+    }
+
+    async checkSchemeShowMinMaxAvg() {
+        const check_min_max_avg = this
+            .selector[this.title]
+            .check_scheme_min_max_avg;
+
+        await this.page.waitForSelector(check_min_max_avg);
+        await this.page.click(check_min_max_avg);
+    }
+
     async checkShowRank() {
         await this.page.waitForSelector(this.Show_Rank);
         await this.page.click(this.Show_Rank);

@@ -18,7 +18,7 @@ export class AdvanceReturnAnalysisPage {
         this.schemaSelection = new SchemaSelectionComponent(page);
         this.reportTypeSection = new ReportReturnType(page);
         this.index = new Index(page);
-        this.otherCriteria = new OtherCriteria(page);
+        this.otherCriteria = new OtherCriteria(page, "Advanced Return Analysis");
     }
 
     async open() {
