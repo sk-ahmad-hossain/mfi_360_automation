@@ -6,19 +6,14 @@ import { ReportType } from '@type/report-type';
 let page: Page;
 let advanceReturnAnalysisPage: AdvanceReturnAnalysisPage;
 
-test.setTimeout(45000);
 test.beforeAll(async ({browser}, testInfo)=> {
+    test.setTimeout(60000);
     page = await browser.newPage();
     const login = new Login(page, testInfo);
     await login.login();
 
     advanceReturnAnalysisPage = new AdvanceReturnAnalysisPage(page);
 })
-
-test.afterAll( async() => {
-    await page.close()
-})
-
 
 test("Verify 'P2P' report generation", async () => {
     const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
@@ -155,8 +150,8 @@ test("Verify 'multiple date' report generation for Both", async () => {
 
 test("Verify 'multiple date' report generation for P2P and Both", async () => { 
     const reportTypes = [
-        { type: "P2P", period: 3, periodType: "days", frequency: 4, frequencyType: "days", dateRange: "1 July 2025 - 5 July 2025" },
-        { type: "Both", period: 5, periodType: "days", frequency: 5, frequencyType: "days", dateRange: "6 July 2025 - 10 July 2025" }
+        { type: "P2P", period: 3, periodType: "days", frequency: 4, frequencyType: "days", startDate: "1 July 2025", endDate : "5 July 2025" },
+        { type: "Both", period: 5, periodType: "days", frequency: 5, frequencyType: "days", startDate: "6 July 2025", endDate: "10 July 2025" }
     ]
     const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
     await advanceReturnAnalysisPage.open();
@@ -169,6 +164,7 @@ test("Verify 'multiple date' report generation for P2P and Both", async () => {
     await advanceReturnAnalysisPage.reportTypeSection.selectReportType(ReportType.MultipleDate);
     for(const report of reportTypes) {
         await advanceReturnAnalysisPage.reportTypeSection.selectReportTypeForMultiple(report.type);
+        await advanceReturnAnalysisPage.reportTypeSection.selectDateRange(report.startDate, report.endDate);
         await advanceReturnAnalysisPage.reportTypeSection.periods_options_mult(report.period, report.periodType)
         await advanceReturnAnalysisPage.reportTypeSection.select_frequency_multi(report.frequency, report.frequencyType)
         await advanceReturnAnalysisPage.reportTypeSection.addReporType();
@@ -184,8 +180,8 @@ test("Verify 'multiple date' report generation for P2P and Both", async () => {
 
 test("Verify 'multiple date' report generation for Rolling and Both", async () => { 
     const reportTypes = [
-        { type: "Rolling", period: 3, periodType: "days", frequency: 4, frequencyType: "days", dateRange: "1 July 2025 - 5 July 2025" },
-        { type: "Both", period: 5, periodType: "days", frequency: 5, frequencyType: "days", dateRange: "6 July 2025 - 10 July 2025" }
+        { type: "Rolling", period: 3, periodType: "days", frequency: 4, frequencyType: "days", startDate: "2 July 2025", endDate: "6 July 2025" },
+        { type: "Both", period: 5, periodType: "days", frequency: 5, frequencyType: "days", startDate: "7 July 2025", endDate: "12 July 2025" }
     ]
     const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
     await advanceReturnAnalysisPage.open();
@@ -198,6 +194,7 @@ test("Verify 'multiple date' report generation for Rolling and Both", async () =
     await advanceReturnAnalysisPage.reportTypeSection.selectReportType(ReportType.MultipleDate);
     for(const report of reportTypes) {
         await advanceReturnAnalysisPage.reportTypeSection.selectReportTypeForMultiple(report.type);
+        await advanceReturnAnalysisPage.reportTypeSection.selectDateRange(report.startDate, report.endDate);
         await advanceReturnAnalysisPage.reportTypeSection.periods_options_mult(report.period, report.periodType)
         await advanceReturnAnalysisPage.reportTypeSection.select_frequency_multi(report.frequency, report.frequencyType)
         await advanceReturnAnalysisPage.reportTypeSection.addReporType();
