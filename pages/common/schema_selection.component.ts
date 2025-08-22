@@ -1,40 +1,57 @@
+
+import { Page } from '@playwright/test';
+
 export class SchemaSelectionComponent {
-    schemaTypeDropdown: any;
-    searchSchemeInput: string = "//input[contains(@placeholder,'Type Scheme Name')]";
-    schemeLocator:string = "//a[text()='%s']/../preceding-sibling::td//label";
-    selectAllCheck:string = "//span[@id='scheme-selection-check-all']";
-    page: any;
+    private page: Page;
+    private schemaTypeDropdown: string = 'scheme-selection-directive select';
+    private searchSchemeInput: string = "//input[contains(@placeholder,'Type Scheme Name')]";
+    private schemeLocator: string = "//a[text()='%s']/../preceding-sibling::td//label";
+    private selectAllCheck: string = "//span[@id='scheme-selection-check-all']";
 
-    constructor(page: any) {
+    constructor(page: Page) {
         this.page = page;
-        this.schemaTypeDropdown = 'scheme-selection-directive select';
     }
 
-    // working fine
-    async selectSchemaType(schemaType: string) {
+    /**
+     * Selects a schema type from the dropdown.
+     * @param schemaType The schema type to select.
+     */
+    async selectSchemaType(schemaType: string): Promise<void> {
         await this.page.waitForSelector(this.schemaTypeDropdown);
-        await this.page.selectOption(this.schemaTypeDropdown, schemaType);
+        await this.page.selectOption(this.schemaTypeDropdown, { label: schemaType });
     }
 
-    // working fine
-    async selectAllScheme() { 
+    /**
+     * Clicks the 'Select All' checkbox for schemes.
+     */
+    async selectAllScheme(): Promise<void> {
         await this.page.waitForSelector(this.selectAllCheck);
         await this.page.click(this.selectAllCheck);
     }
-    
-    // working fine
-    async searchScheme(scheme: string) {
+
+    /**
+     * Searches for a scheme by name.
+     * @param scheme The scheme name to search for.
+     */
+    async searchScheme(scheme: string): Promise<void> {
         await this.page.fill(this.searchSchemeInput, scheme);
     }
 
-    // working fine
-    async selectScheme(scheme: string) {
+    /**
+     * Selects a scheme by name.
+     * @param scheme The scheme name to select.
+     */
+    async selectScheme(scheme: string): Promise<void> {
         const schemeNameLocator = this.schemeNameLocator(scheme);
         await this.page.waitForSelector(schemeNameLocator);
         await this.page.click(schemeNameLocator);
     }
 
-    schemeNameLocator(scheme: string): string {
+    /**
+     * Returns the locator for a scheme name.
+     * @param scheme The scheme name.
+     */
+    private schemeNameLocator(scheme: string): string {
         return this.schemeLocator.replace('%s', scheme);
     }
 }
