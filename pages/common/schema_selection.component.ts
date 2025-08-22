@@ -1,11 +1,13 @@
-export class SchemaSelectionComponent {
-    schemaTypeDropdown: any;
-    searchSchemeInput: string = "//input[contains(@placeholder,'Type Scheme Name')]";
-    schemeLocator:string = "//a[text()='%s']/../preceding-sibling::td//label";
-    selectAllCheck:string = "//span[@id='scheme-selection-check-all']";
-    page: any;
+import { Page } from "playwright";
 
-    constructor(page: any) {
+export class SchemaSelectionComponent {
+    private schemaTypeDropdown: any;
+    private searchSchemeInput: string = "//input[contains(@placeholder,'Type Scheme Name')]";
+    private schemeLocator:string = "//a[text()='%s']/../preceding-sibling::td//label/span";
+    private selectAllCheck:string = "//span[@id='scheme-selection-check-all']";
+    private readonly page: Page;
+
+    constructor(page: Page) {
         this.page = page;
         this.schemaTypeDropdown = 'scheme-selection-directive select';
     }
@@ -24,6 +26,7 @@ export class SchemaSelectionComponent {
     
     // working fine
     async searchScheme(scheme: string) {
+        await this.page.locator(this.searchSchemeInput).clear();
         await this.page.fill(this.searchSchemeInput, scheme);
     }
 
@@ -34,7 +37,7 @@ export class SchemaSelectionComponent {
         await this.page.click(schemeNameLocator);
     }
 
-    schemeNameLocator(scheme: string): string {
+    private schemeNameLocator(scheme: string): string {
         return this.schemeLocator.replace('%s', scheme);
     }
 }
