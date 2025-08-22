@@ -136,6 +136,23 @@ export class ReportReturnType {
             await this.page.click("//div[@class='btn btn-success btn-xs'][normalize-space()='Month']");
     }
 
+    async selectDateRange(start: string, end: string) {
+        const dateRangePicker = this.page.locator('[name="FromToDateRange"]');
+        const visiblePicker = dateRangePicker.filter({visible: true});
+        await visiblePicker.nth(0).click();
+
+        const startDatePicker = this.page.locator("[name='daterangepicker_start']")
+        const visibleStartDate = startDatePicker.filter({visible: true});
+        const startInput = visibleStartDate.nth(0);
+        await startInput.fill(start);
+        await startInput.press('Enter')
+
+        const endDatePicker = this.page.locator('[name="daterangepicker_end"]')
+        const visibleEndDate = endDatePicker.filter({visible: true});
+        const endInput = visibleEndDate.nth(0);
+        await endInput.fill(end);
+        await endInput.press('Enter');
+    }
     
     async addReporType() {
         const selector = ".btn.btn-success.pull-right.btn-xs";

@@ -1,32 +1,36 @@
-import { Locator } from "playwright";
+import { Locator, Page } from "playwright";
 
 export class Index {
-    Scheme_Benchmark_Suitable_Index  ="span[id='SchemePerformanceIndexSelectionchkIsSchemeIndex'] span[role='button']";
-    Search_type_index_name="//input[@id='SchemePerformanceIndexSelectiontxtFilter']";
-    select_all_index_check="span[id='SchemePerformanceIndexSelectionchkMFIndexAll'] fieldset[role='button']";
-    select_other_index="//a[normalize-space()='%s']/../preceding-sibling::td/label/..";
+    private Scheme_Benchmark_Suitable_Index  ="span[id='SchemePerformanceIndexSelectionchkIsSchemeIndex'] span[role='button']";
+    private Search_type_index_name="input#SchemePerformanceIndexSelectiontxtFilter";
+    private search_type_input_name_2 = "input#SebiPerformanceIndexSelectiontxtFilter";
+
+    private select_all_index_check="span[id='SchemePerformanceIndexSelectionchkMFIndexAll'] fieldset[role='button']";
+    private select_other_index="//a[normalize-space()='%s']/../preceding-sibling::td/label/..";
 
     // TODO remove duplicate selector, same as select_other_index
     //select_= "#SchemePerformanceIndexSelectionheadingTwo";
-    select_all_customize_check = "//span[@id='SchemePerformanceIndexSelectionchkCustomIndexAll']//fieldset[@role='button']";
-    search_type_customize_index_name = "#SchemePerformanceIndexSelectioncustomizedIndex input[type=text]";
+    private select_all_customize_check = "//span[@id='SchemePerformanceIndexSelectionchkCustomIndexAll']//fieldset[@role='button']";
+    private search_type_customize_index_name = "#SchemePerformanceIndexSelectioncustomizedIndex input[type=text]";
+    private readonly search_type_customize_index_name_2 = "#SebiPerformanceIndexSelectioncustomizedIndex input[type=text]"
 
     //select_composite_check = "#SchemePerformanceIndexSelectionheadingThree";
-    select_all_composite_index_name = "//span[@id='SchemePerformanceIndexSelectionchkCompositeIndexAll']//fieldset[@role='button']";
+    private select_all_composite_index_name = "//span[@id='SchemePerformanceIndexSelectionchkCompositeIndexAll']//fieldset[@role='button']";
     // TODO remove duplicate selector, same as select_other_index
     //select_composite_index = "//a[normalize-space()='%s']/../preceding-sibling::td/label";
-    search_composite_index = "#SchemePerformanceIndexSelectioncompositeIndex input[type=text]"
+    private readonly search_composite_index = "#SchemePerformanceIndexSelectioncompositeIndex input[type=text]"
+    private readonly search_composite_index_2 = "#SebiPerformanceIndexSelectioncompositeIndex input[type=text]"
 
-    readonly page: any;
-    readonly indexSectionLocator: Locator;
-    readonly customizeSectionLocator: Locator;
-    readonly compositeSectionLocator: Locator;
+    private readonly page: Page;
+    private readonly indexSectionLocator: Locator;
+    private readonly customizeSectionLocator: Locator;
+    private readonly compositeSectionLocator: Locator;
 
-    constructor(page: any) {
+    constructor(page: Page) {
         this.page = page;
         this.indexSectionLocator = page.locator("//h2[text()='Index']/following-sibling::i"); 
-        this.customizeSectionLocator = page.locator("//h2[text()='Customized Index']/following-sibling::i"); 
-        this.compositeSectionLocator = page.locator("//h2[text()='Composite Index']/following-sibling::i"); 
+        this.customizeSectionLocator = page.locator("(//h2[text()='Customized Index']/following-sibling::i)[1]"); 
+        this.compositeSectionLocator = page.locator("(//h2[text()='Composite Index']/following-sibling::i)[1]"); 
     }
 
     async expandSectionIndex(): Promise<void> {
@@ -41,7 +45,9 @@ export class Index {
         await this.page.waitForSelector(this.Scheme_Benchmark_Suitable_Index);
     }
     async searchIndex(indexName: string) {
-        await this.page.fill(this.Search_type_index_name, indexName);
+        const search_field = this.page.locator(this.search_type_input_name_2)
+                                    .or(this.page.locator(this.Search_type_index_name));
+        await search_field.fill(indexName);
     }
     async selectAllIndex() {
         await this.page.waitForSelector(this.select_all_index_check);
@@ -65,8 +71,11 @@ export class Index {
     }
 
     async searchCustomizeIndex(indexName: string) {
-        await this.page.fill(this.search_type_customize_index_name, indexName);
+        const input = this.page.locator(this.search_type_customize_index_name)
+            .or(this.page.locator(this.search_type_customize_index_name_2))
+        await input.fill(indexName);
     }
+
     async selectAllCustomizeIndex() {
         await this.page.waitForSelector(this.select_all_customize_check);
         await this.page.click(this.select_all_customize_check);
@@ -89,8 +98,11 @@ export class Index {
     }
 
     async searchCompositeIndex(indexName: string) {
-        await this.page.locator(this.search_composite_index).clear();
-        await this.page.fill(this.search_composite_index, indexName);
+        const locator = this.page.locator(this.search_composite_index)
+            .or(this.page.locator(this.search_composite_index_2))
+
+        await locator.clear();
+        await locator.fill(indexName);
     }
 
     async selectAllCompositeIndex() {

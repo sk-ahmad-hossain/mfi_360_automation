@@ -6,8 +6,8 @@ import { IndexPerformanceAnalysis } from '@pages/index_performance_analysis.page
 let page: Page;
 let indexPerformanceAnalysis: IndexPerformanceAnalysis;
 
-test.setTimeout(45000);
 test.beforeAll(async ({browser}, testInfo)=> {
+    test.setTimeout(60000);
     page = await browser.newPage();
     const login = new Login(page, testInfo);
     await login.login();

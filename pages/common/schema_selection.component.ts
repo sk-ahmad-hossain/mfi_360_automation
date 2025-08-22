@@ -1,12 +1,11 @@
-
 import { Page } from '@playwright/test';
 
 export class SchemaSelectionComponent {
-    private page: Page;
-    private schemaTypeDropdown: string = 'scheme-selection-directive select';
+    private schemaTypeDropdown: any;
     private searchSchemeInput: string = "//input[contains(@placeholder,'Type Scheme Name')]";
-    private schemeLocator: string = "//a[text()='%s']/../preceding-sibling::td//label";
-    private selectAllCheck: string = "//span[@id='scheme-selection-check-all']";
+    private schemeLocator:string = "//a[text()='%s']/../preceding-sibling::td//label/span";
+    private selectAllCheck:string = "//span[@id='scheme-selection-check-all']";
+    private readonly page: Page;
 
     constructor(page: Page) {
         this.page = page;
@@ -29,11 +28,8 @@ export class SchemaSelectionComponent {
         await this.page.click(this.selectAllCheck);
     }
 
-    /**
-     * Searches for a scheme by name.
-     * @param scheme The scheme name to search for.
-     */
-    async searchScheme(scheme: string): Promise<void> {
+    async searchScheme(scheme: string) {
+        await this.page.locator(this.searchSchemeInput).clear();
         await this.page.fill(this.searchSchemeInput, scheme);
     }
 
@@ -47,10 +43,6 @@ export class SchemaSelectionComponent {
         await this.page.click(schemeNameLocator);
     }
 
-    /**
-     * Returns the locator for a scheme name.
-     * @param scheme The scheme name.
-     */
     private schemeNameLocator(scheme: string): string {
         return this.schemeLocator.replace('%s', scheme);
     }
