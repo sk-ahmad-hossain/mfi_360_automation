@@ -123,3 +123,89 @@ test("Verify 'multiple date' report generation", async () => {
 
     await page.waitForLoadState()
 })
+
+
+test("Verify 'multiple date' report generation for Both", async () => { 
+    const reportTypes = [
+        { type: "Both", period: 5, periodType: "days", frequency: 5, frequencyType: "days", dateRange: "1 July 2025 - 15 July 2025" }
+    ]
+    const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
+    await advanceReturnAnalysisPage.open();
+
+    // schema selection
+    await advanceReturnAnalysisPage.schemaSelection.searchScheme(schemeName);
+    await advanceReturnAnalysisPage.schemaSelection.selectScheme(schemeName);
+
+   // report FixedPeriodic type selection    
+    await advanceReturnAnalysisPage.reportTypeSection.selectReportType(ReportType.MultipleDate);
+    for(const report of reportTypes) {
+        await advanceReturnAnalysisPage.reportTypeSection.selectReportTypeForMultiple(report.type);
+        await advanceReturnAnalysisPage.reportTypeSection.periods_options_mult(report.period, report.periodType)
+        await advanceReturnAnalysisPage.reportTypeSection.select_frequency_multi(report.frequency, report.frequencyType)
+        await advanceReturnAnalysisPage.reportTypeSection.addReporType();
+    }
+
+    await advanceReturnAnalysisPage.reportTypeSection.selectSettingSet("abs");
+    await advanceReturnAnalysisPage.reportTypeSection.checkSchemeWithIndex();
+    await advanceReturnAnalysisPage.clickShowReport();
+
+    await page.waitForLoadState()
+})
+
+
+test("Verify 'multiple date' report generation for P2P and Both", async () => { 
+    const reportTypes = [
+        { type: "P2P", period: 3, periodType: "days", frequency: 4, frequencyType: "days", dateRange: "1 July 2025 - 5 July 2025" },
+        { type: "Both", period: 5, periodType: "days", frequency: 5, frequencyType: "days", dateRange: "6 July 2025 - 10 July 2025" }
+    ]
+    const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
+    await advanceReturnAnalysisPage.open();
+
+    // schema selection
+    await advanceReturnAnalysisPage.schemaSelection.searchScheme(schemeName);
+    await advanceReturnAnalysisPage.schemaSelection.selectScheme(schemeName);
+
+   // report FixedPeriodic type selection    
+    await advanceReturnAnalysisPage.reportTypeSection.selectReportType(ReportType.MultipleDate);
+    for(const report of reportTypes) {
+        await advanceReturnAnalysisPage.reportTypeSection.selectReportTypeForMultiple(report.type);
+        await advanceReturnAnalysisPage.reportTypeSection.periods_options_mult(report.period, report.periodType)
+        await advanceReturnAnalysisPage.reportTypeSection.select_frequency_multi(report.frequency, report.frequencyType)
+        await advanceReturnAnalysisPage.reportTypeSection.addReporType();
+    }
+
+    await advanceReturnAnalysisPage.reportTypeSection.selectSettingSet("abs");
+    await advanceReturnAnalysisPage.reportTypeSection.checkSchemeWithIndex();
+    await advanceReturnAnalysisPage.clickShowReport();
+
+    await page.waitForLoadState()
+})
+
+
+test("Verify 'multiple date' report generation for Rolling and Both", async () => { 
+    const reportTypes = [
+        { type: "Rolling", period: 3, periodType: "days", frequency: 4, frequencyType: "days", dateRange: "1 July 2025 - 5 July 2025" },
+        { type: "Both", period: 5, periodType: "days", frequency: 5, frequencyType: "days", dateRange: "6 July 2025 - 10 July 2025" }
+    ]
+    const schemeName = "Franklin India Corporate Debt Fund - Qtly IDCW";
+    await advanceReturnAnalysisPage.open();
+
+    // schema selection
+    await advanceReturnAnalysisPage.schemaSelection.searchScheme(schemeName);
+    await advanceReturnAnalysisPage.schemaSelection.selectScheme(schemeName);
+
+   // report FixedPeriodic type selection    
+    await advanceReturnAnalysisPage.reportTypeSection.selectReportType(ReportType.MultipleDate);
+    for(const report of reportTypes) {
+        await advanceReturnAnalysisPage.reportTypeSection.selectReportTypeForMultiple(report.type);
+        await advanceReturnAnalysisPage.reportTypeSection.periods_options_mult(report.period, report.periodType)
+        await advanceReturnAnalysisPage.reportTypeSection.select_frequency_multi(report.frequency, report.frequencyType)
+        await advanceReturnAnalysisPage.reportTypeSection.addReporType();
+    }
+
+    await advanceReturnAnalysisPage.reportTypeSection.selectSettingSet("abs");
+    await advanceReturnAnalysisPage.reportTypeSection.checkSchemeWithIndex();
+    await advanceReturnAnalysisPage.clickShowReport();
+
+    await page.waitForLoadState()
+})
