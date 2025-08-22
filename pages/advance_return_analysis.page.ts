@@ -10,6 +10,7 @@ export class AdvanceReturnAnalysisPage {
     otherCriteria: OtherCriteria;
     index : Index;
     private showReportSelector: string = "#ShowPerformanceReturn";
+    private title: string = "div.page-title h3"
     page: any;
 
     constructor(page: any) {
@@ -24,7 +25,7 @@ export class AdvanceReturnAnalysisPage {
     async open() {
         await this.page.goto("/SchemePerformance/Advance")
         await this.page.waitForLoadState()
-        await expect(this.page.locator('div.page-title h3')).toContainText('Advanced Return Analysis');
+        await expect(this.page.locator(this.title)).toContainText('Advanced Return Analysis');
     }
 
     async clickShowReport(){
