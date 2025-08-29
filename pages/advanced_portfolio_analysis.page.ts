@@ -2,6 +2,7 @@ import { Page, Locator, expect } from '@playwright/test';
 
 import { SchemaSelectionComponent } from "pages/common/schema_selection.component"
 import { BasePage } from './common/BasePage';
+import { setBorder } from 'utils/util';
 //import { setBorder } from 'utils/util';
 
 export class AdvancedPortfolioAnalysis extends BasePage{
@@ -25,7 +26,7 @@ export class AdvancedPortfolioAnalysis extends BasePage{
   private DebtDetails: Locator;
   private topHoldingDropdown: Locator;
   private groupCompanyDropdown: Locator;
-  private InstrumentSet: Locator;
+  private readonly InstrumentSet: string = "//div[@id='tab_contentDetailedPortfolio']//span[text()='Instrument Set']/../fieldset";
   private RatingSet: Locator;
   private showreport: Locator;
   private newEntryExitTab: Locator;
@@ -56,8 +57,8 @@ export class AdvancedPortfolioAnalysis extends BasePage{
     this.SelectSector = page.locator("#drpSector"); // adjust selector
     this.longTermRating= page.locator("#drplngtrmrting"); // adjust selector
     this.groupCompanyDropdown = page.locator("(//select[@id='chkGrpCompany'])[1]"); // adjust selector
-    this.InstrumentSet = page.locator("#chkInstrumentSet");
-    this.RatingSet = page.locator("#chkRatingSet");
+    //this.InstrumentSet = page.locator("//div[@id='tab_contentDetailedPortfolio']//span[text()='Instrument Set']/../fieldset");
+    this.RatingSet = page.locator("//div[@id='tab_contentDetailedPortfolio']//span[text()='Rating Set']/../fieldset");
     this.showreport= page.locator("#btnGetDetailedPortfolio");
 
 
@@ -197,30 +198,21 @@ async validateFundSizeIsMonthly() {
 //   await optionLocator.waitFor({ state: 'visible' });
 //   await optionLocator.click(); // select option
 // }
-async selectGroupCompany(option: 'Yes' | 'No') {
-  // Use the specific dropdown locator to find the option within it.
-  const dropdownLocator = this.page.locator('#chkGrpCompany');
-  
-  // Click the dropdown to open it
-  await this.groupCompanyDropdown.click(); 
 
-  // Locate the option *within* the dropdown
- const yesOption = this.page.locator("//li[text()='Yes']");
-  await yesOption.waitFor({ state: 'visible' });
-  await yesOption.click();
+
+async selectGroupCompany(option: 'Yes' | 'No') {
+  const dropdownLocator = this.page.locator('#chkGrpCompany');
+  await dropdownLocator.selectOption("Yes");
 }
 
 async checkInstrumentAndRatingSet(instrumentChecked: boolean, ratingChecked: boolean) {
   if (instrumentChecked) {
-    await this.InstrumentSet.check();
-  } else {
-    await this.InstrumentSet.uncheck();
+    await setBorder(this.page, this.InstrumentSet)
+    await this.page.click(this.InstrumentSet);
   }
 
   if (ratingChecked) {
-    await this.RatingSet.check();
-  } else {
-    await this.RatingSet.uncheck();
+    await this.RatingSet.click();
   }
 }
 async clickShowReport() {
