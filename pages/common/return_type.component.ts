@@ -164,7 +164,7 @@ export class ReportReturnType {
         const selector = "[ng-model='SelectedReturnId']";
         await this.page.waitForSelector(selector, { state: 'visible' });
         const dropdown = this.page.locator(selector);
-        await dropdown.selectOption('Both');
+        await dropdown.selectOption(type);
     }    
 }
 
