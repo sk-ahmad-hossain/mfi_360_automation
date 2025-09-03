@@ -14,12 +14,39 @@ test.beforeAll(async ({browser}, testInfo)=> {
     lumpsumPerformance = new LumpsumPerformance(page);
 })
 
+//Franklin India Corporate Debt Fund - Qtly IDCW
+//ICICI Prudential Floating Interest Fund - Dir -  Dly IDCW
+//ICICI Prudential Floating Interest Fund - Dly IDCW
+//ICICI Prudential Money Market Fund - Dir-  Dly IDCW
+//ICICI Prudential Money Market Fund - Reg - Dly IDCW
+//ICICI Prudential Savings Fund - Dir - Dly IDCW
+//ICICI Prudential Savings Fund - Reg - Dly IDCW
+//ICICI Prudential Ultra Short Term Fund - Dir - Daily IDCW
+//ICICI Prudential Ultra Short Term Fund - Reg - Dly IDCW
+
+//Invesco India - Invesco Global Consumer Trends Fund of Fund - Dir - Growth
+//Invesco India - Invesco Global Consumer Trends Fund of Fund - Dir - IDCW
+
+
+// create mapping with check last day or month
+// create mapping with return type CAGR
+// create mapping with return type Absolute
+// create mapping with return type Simpel Annualised
+
 test("create mapping with single scheme only", async () => {
     const scheme = "Franklin India Corporate Debt Fund - Qtly IDCW";
     await lumpsumPerformance.open();
     await page.waitForLoadState();
     await lumpsumPerformance.schemaSelection.searchScheme(scheme)
     await lumpsumPerformance.schemaSelection.selectScheme(scheme)
+
+    // date section
+    await lumpsumPerformance.dateSelection.selectDate("30 July 2025")
+    await lumpsumPerformance.dateSelection.checkLastDayOfMonth()
+    await lumpsumPerformance.dateSelection.setInvestedValue("5000")
+    await lumpsumPerformance.dateSelection.selectReturnPeriod(["7 Days", "15 Days"])
+    await lumpsumPerformance.dateSelection.selectReturnType("CAGR")
+
     await lumpsumPerformance.createMap();
     await lumpsumPerformance.validCreateSuccessfullMessage();
     await page.waitForLoadState();
@@ -36,16 +63,20 @@ test("create mapping which is already exists", async () => {
     await page.waitForLoadState();
     await lumpsumPerformance.schemaSelection.searchScheme(scheme)
     await lumpsumPerformance.schemaSelection.selectScheme(scheme)
+
+    await lumpsumPerformance.dateSelection.selectDate("30 July 2025")
+    await lumpsumPerformance.dateSelection.checkLastDayOfMonth()
+
     await lumpsumPerformance.createMap();
     await lumpsumPerformance.validateMapAlreadyPresentErrorMessage();
     await page.waitForLoadState()
 });
 
 // done
-test("create mapping with multiple scheme", async () => {
+test("create mapping with multiple scheme and return type absolute", async () => {
     const schemes = [
-        "Franklin India Corporate Debt Fund - Qtly IDCW",
-        "ICICI Prudential Floating Interest Fund - Dir -  Dly IDCW"
+        "ICICI Prudential Floating Interest Fund - Dir -  Dly IDCW",
+        "ICICI Prudential Floating Interest Fund - Dly IDCW"
     ];
     await lumpsumPerformance.open();
     await page.waitForLoadState();
@@ -53,6 +84,11 @@ test("create mapping with multiple scheme", async () => {
         await lumpsumPerformance.schemaSelection.searchScheme(scheme)
         await lumpsumPerformance.schemaSelection.selectScheme(scheme)
     }
+
+    await lumpsumPerformance.dateSelection.selectDate("30 July 2025")
+    await lumpsumPerformance.dateSelection.checkLastDayOfMonth()
+    await lumpsumPerformance.dateSelection.selectReturnType("Absolute")
+
     await lumpsumPerformance.createMap();
     await lumpsumPerformance.validCreateSuccessfullMessage();
     await lumpsumPerformance.validateMapPresent(schemes);
@@ -60,15 +96,18 @@ test("create mapping with multiple scheme", async () => {
 })
 
 // done
-test("create mapping with single schema and index only", async () => {
-    const scheme = "Franklin India Corporate Debt Fund - Qtly IDCW"
+test("create mapping with single schema and index only and custom date", async () => {
+    const scheme = "ICICI Prudential Money Market Fund - Dir-  Dly IDCW"
+    const index = "BSE 100";
     await lumpsumPerformance.open();
     await page.waitForLoadState();
     await lumpsumPerformance.schemaSelection.searchScheme(scheme)
     await lumpsumPerformance.schemaSelection.selectScheme(scheme)
 
-    await lumpsumPerformance.index.searchIndex("BSE 100");
-    await lumpsumPerformance.index.selectIndex("BSE 100");
+    await lumpsumPerformance.index.searchIndex(index);
+    await lumpsumPerformance.index.selectIndex(index);
+
+    await lumpsumPerformance.dateSelection.selectDate("30 July 2025")
 
     await lumpsumPerformance.createMap();
     await lumpsumPerformance.validCreateSuccessfullMessage();
@@ -77,16 +116,21 @@ test("create mapping with single schema and index only", async () => {
 })
 
 // done
-test("create mapping with scheme and customize index", async () => {
-    const scheme = "Franklin India Corporate Debt Fund - Qtly IDCW"
+test("create mapping with scheme, customize index, custom date with last day of the month", async () => {
+    const scheme = "ICICI Prudential Money Market Fund - Reg - Dly IDCW"
+    const customize_index = "Custom Index Generic";
+
     await lumpsumPerformance.open();
     await page.waitForLoadState();
     await lumpsumPerformance.schemaSelection.searchScheme(scheme)
     await lumpsumPerformance.schemaSelection.selectScheme(scheme)
 
     await lumpsumPerformance.index.expandSectionCustomizeIndex()
-    await lumpsumPerformance.index.searchCustomizeIndex("Custom Index Generic");
-    await lumpsumPerformance.index.selectCustomizeIndex("Custom Index Generic");
+    await lumpsumPerformance.index.searchCustomizeIndex(customize_index);
+    await lumpsumPerformance.index.selectCustomizeIndex(customize_index);
+
+    await lumpsumPerformance.dateSelection.selectDate("30 July 2025")
+    await lumpsumPerformance.dateSelection.checkLastDayOfMonth()
 
     await lumpsumPerformance.createMap();
     await lumpsumPerformance.validCreateSuccessfullMessage();
@@ -95,8 +139,8 @@ test("create mapping with scheme and customize index", async () => {
 })
 
 // done
-test("create mapping with scheme and composite index", async () => {
-    const scheme = "ICICI Prudential Savings Fund - Reg - Dly IDCW"
+test("create mapping with scheme, composite index, invested value and return periods", async () => {
+    const scheme = "ICICI Prudential Savings Fund - Dir - Dly IDCW"
     const composite_index = "Composite index 1"
 
     await lumpsumPerformance.open();
@@ -108,85 +152,14 @@ test("create mapping with scheme and composite index", async () => {
     await lumpsumPerformance.index.searchCompositeIndex(composite_index);
     await lumpsumPerformance.index.selectCompositeIndex(composite_index);
 
-    await lumpsumPerformance.createMap();
-    await lumpsumPerformance.validCreateSuccessfullMessage();
-    await lumpsumPerformance.validateMapPresent([scheme]);
-    await page.waitForLoadState()
-})
-
-test("create mapping with index and additional index", async () => {
-    const scheme = "ICICI Prudential Savings Fund - Reg - Dly IDCW"
-    const composite_index = "Composite index 1"
-
-    await lumpsumPerformance.open();
-    await page.waitForLoadState();
-    await lumpsumPerformance.schemaSelection.searchScheme(scheme)
-    await lumpsumPerformance.schemaSelection.selectScheme(scheme)
-
-    await lumpsumPerformance.index.expandSectionCompositeIndex()
-    await lumpsumPerformance.index.searchCompositeIndex(composite_index);
-    await lumpsumPerformance.index.selectCompositeIndex(composite_index);
+    await lumpsumPerformance.dateSelection.setInvestedValue("15000");
+    await lumpsumPerformance.dateSelection.selectReturnPeriod(["7 Days", "15 Days"])
 
     await lumpsumPerformance.createMap();
     await lumpsumPerformance.validCreateSuccessfullMessage();
     await lumpsumPerformance.validateMapPresent([scheme]);
     await page.waitForLoadState()
 })
-test("create mapping with schema, index, additioal index and additioanl index 2", async () => {
-    const scheme = "ICICI Prudential Savings Fund - Reg - Dly IDCW"
-    const composite_index = "Composite index 1"
-
-    await lumpsumPerformance.open();
-    await page.waitForLoadState();
-    await lumpsumPerformance.schemaSelection.searchScheme(scheme)
-    await lumpsumPerformance.schemaSelection.selectScheme(scheme)
-
-    await lumpsumPerformance.index.expandSectionCompositeIndex()
-    await lumpsumPerformance.index.searchCompositeIndex(composite_index);
-    await lumpsumPerformance.index.selectCompositeIndex(composite_index);
-
-    await lumpsumPerformance.createMap();
-    await lumpsumPerformance.validCreateSuccessfullMessage();
-    await lumpsumPerformance.validateMapPresent([scheme]);
-    await page.waitForLoadState()
-})
-test("create mapping with composite index and additional composite index", async () => {
-    const scheme = "ICICI Prudential Savings Fund - Reg - Dly IDCW"
-    const composite_index = "Composite index 1"
-
-    await lumpsumPerformance.open();
-    await page.waitForLoadState();
-    await lumpsumPerformance.schemaSelection.searchScheme(scheme)
-    await lumpsumPerformance.schemaSelection.selectScheme(scheme)
-
-    await lumpsumPerformance.index.expandSectionCompositeIndex()
-    await lumpsumPerformance.index.searchCompositeIndex(composite_index);
-    await lumpsumPerformance.index.selectCompositeIndex(composite_index);
-
-    await lumpsumPerformance.createMap();
-    await lumpsumPerformance.validCreateSuccessfullMessage();
-    await lumpsumPerformance.validateMapPresent([scheme]);
-    await page.waitForLoadState()
-})
-test("create mapping with customize index and additional customize index", async() => {
-    const scheme = "ICICI Prudential Savings Fund - Reg - Dly IDCW"
-    const composite_index = "Composite index 1"
-
-    await lumpsumPerformance.open();
-    await page.waitForLoadState();
-    await lumpsumPerformance.schemaSelection.searchScheme(scheme)
-    await lumpsumPerformance.schemaSelection.selectScheme(scheme)
-
-    await lumpsumPerformance.index.expandSectionCompositeIndex()
-    await lumpsumPerformance.index.searchCompositeIndex(composite_index);
-    await lumpsumPerformance.index.selectCompositeIndex(composite_index);
-
-    await lumpsumPerformance.createMap();
-    await lumpsumPerformance.validCreateSuccessfullMessage();
-    await lumpsumPerformance.validateMapPresent([scheme]);
-    await page.waitForLoadState()
-})
-
 
 // Negative
 test("create mappping with index, customize index or composite index and same addition index", async () => {
@@ -210,25 +183,7 @@ test("create mappping with index, customize index or composite index and same ad
 
 // Negative
 test("create mapping with additioanal index and additional index 2", async () => {
-    const scheme = "ICICI Prudential Savings Fund - Reg - Dly IDCW"
-    const composite_index = "Composite index 1"
-
-    await lumpsumPerformance.open();
-    await page.waitForLoadState();
-    await lumpsumPerformance.schemaSelection.searchScheme(scheme)
-    await lumpsumPerformance.schemaSelection.selectScheme(scheme)
-
-    await lumpsumPerformance.index.expandSectionCompositeIndex()
-    await lumpsumPerformance.index.searchCompositeIndex(composite_index);
-    await lumpsumPerformance.index.selectCompositeIndex(composite_index);
-
-    await lumpsumPerformance.createMap();
-    await lumpsumPerformance.validCreateSuccessfullMessage();
-    await lumpsumPerformance.validateMapPresent([scheme]);
-    await page.waitForLoadState()
-})
-test("create mapping with schema and multiple indexs", async () => {
-    const scheme = "ICICI Prudential Savings Fund - Reg - Dly IDCW"
+    const scheme = "ICICI Prudential Ultra Short Term Fund - Dir - Daily IDCW"
     const composite_index = "Composite index 1"
 
     await lumpsumPerformance.open();
@@ -248,7 +203,7 @@ test("create mapping with schema and multiple indexs", async () => {
 
 // Negative
 test("create mapping with schema and combined index and composiete or customized", async () => {
-    const scheme = "ICICI Prudential Savings Fund - Reg - Dly IDCW"
+    const scheme = "ICICI Prudential Ultra Short Term Fund - Reg - Dly IDCW"
     const composite_index = "Composite index 1"
 
     await lumpsumPerformance.open();
@@ -265,11 +220,3 @@ test("create mapping with schema and combined index and composiete or customized
     await lumpsumPerformance.validateMapPresent([scheme]);
     await page.waitForLoadState()
 })
-
-
-// create mapping without invested value
-// create mapping without return period
-// create mapping with check last day or month
-// create mapping with return type CAGR
-// create mapping with return type Absolute
-// create mapping with return type Simpel Annualised

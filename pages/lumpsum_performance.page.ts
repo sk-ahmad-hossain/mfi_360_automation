@@ -7,6 +7,7 @@ import { expect } from "playwright/test";
 export class LumpsumPerformance extends BasePage {
     readonly schemaSelection: SchemaSelectionComponent;
     readonly index : Index;
+    readonly dateSelection: DateSelection;
 
     private readonly mapButton = "button#mapscheme";
     private readonly map_locator = "//td[text()='%s']/preceding-sibling::td//fieldset"
@@ -15,6 +16,7 @@ export class LumpsumPerformance extends BasePage {
         super(page, "/SchemePerformance/SebiPerformanceReport", "Lumpsum Performance")
         this.schemaSelection = new SchemaSelectionComponent(page);
         this.index = new Index(page);
+        this.dateSelection = new DateSelection(page);
     }
 
     // unmap message - Un-Mapping is successfully done.
@@ -71,4 +73,55 @@ export class LumpsumPerformance extends BasePage {
         await this.page.click("md-dialog-actions button")
     }
 
+}
+
+class DateSelection extends BasePage {
+    private readonly date_selector: string = "#ToDateP2P"
+    private readonly last_day_of_month_selector: string = "//span[text()='Last Day of Month']/preceding-sibling::fieldset";
+    private readonly invested_value_selector: string = "#txtInvestmentValue";
+    private readonly return_period_selector: string = "div[extra-settings='DDLamcSetting'] button";
+    private readonly return_type_selector: string = "select[ng-model='SIRetselected']"
+    private readonly periods_options:string = "//li//span[text()='%s']/../fieldset";
+    private readonly period_search_field:string = "div.dropdown-header input";
+
+    constructor(page: Page) {
+        super(page);
+    }
+    
+
+    async selectDate(date: string) {
+        await this.page.fill(this.date_selector, date);
+        await this.page.locator(this.date_selector).press('Enter');
+    }
+
+    async checkLastDayOfMonth() {
+        await this.page.click(this.last_day_of_month_selector);
+    }
+
+    async setInvestedValue(value: string) {
+        await this.page.fill(this.invested_value_selector, value);
+    }
+
+    async selectReturnPeriod(periods: string[]) {
+        const periodDropdown = this.page.locator(this.return_period_selector);
+        const searchField = this.page.locator(this.period_search_field);
+
+        await periodDropdown.click();
+        
+        for (const period of periods) {
+            await searchField.clear();
+            await searchField.fill(period);
+
+            const periodLocator = this.page.locator(this.periods_options.replace('%s', period));
+            await periodLocator.click();
+        }
+        searchField.clear();
+        await periodDropdown.click();
+    }
+    
+    async selectReturnType(type: string) {
+        await this.page.waitForSelector(this.return_type_selector, { state: 'visible' });
+        const dropdown = this.page.locator(this.return_type_selector);
+        await dropdown.selectOption(type);
+    }
 }
