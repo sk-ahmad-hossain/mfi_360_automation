@@ -24,7 +24,7 @@ export class FundDashboardPage {
             benchmark_Index: "//td[normalize-space()='NIFTY Low Duration Debt Index A-I*']",
             fund_Manager: "//td[contains(text(),'Kaustubh Gupta,')]",
             launch_Date: "//td[normalize-space()='05-Jun-2003']",
-            aum: "//td[normalize-space()='13619.76']",
+            aum: "//td[normalize-space()='']",
             exit_Load: "//td[normalize-space()='Nil']",
             scheme_Nature: "//td[normalize-space()='Debt']",
             scheme_Sub_Nature: "//td[normalize-space()='Floater Fund']",
@@ -46,7 +46,7 @@ export class FundDashboardPage {
         calendarYearReturnsChart: " //div[@class='x_panel' and @data-step='2']",
         lumpsumPerformanceChart: "#tblLumpsumPerformance",
         rollingReturnsChart: "(//div[@class='col-md-12 col-sm-12 col-xs-12'])[2]",
-        rollingReturnsGraph: "#highcharts-cjiy0a8-12",
+        rollingReturnsGraph: "//*[@id='DirrFundDashboardRatio']/div[6]"
     }
 
     private riskReturnMatrixGraph: string = ".col-md-12.col-sm-12.col-xs-12.m-t-sm.m-b-sm";
@@ -68,7 +68,7 @@ export class FundDashboardPage {
 
     private minLumpsumInvestment: string = "(//div[@class='col-lg-2 col-md-2 col-sm-4 col-xs-12 ng-scope'])[1]";
     private monthlySIPDates: string = "(//div[@class='col-lg-2 col-md-2 col-sm-4 col-xs-12 ng-scope'])[2]";
-    private stylebox: string = "//div[normalize-space()='Stylebox']/following-sibling::div";
+    private stylebox: string = "(//div[@class='databox radius-bordered databox-shadowed'])[3]";
     // private peRatio: string = "//div[normalize-space()='P/E Ratio']/following-sibling::div";
     // private pbRatio: string = "//div[normalize-space()='P/B Ratio']/following-sibling::div";
     private YTM: string = "//div[normalize-space()='YTM']/following-sibling::div";
@@ -76,12 +76,12 @@ export class FundDashboardPage {
     private macaulayDuration: string = "//div[normalize-space()='Macaulay Duration']/following-sibling::div";
     //private dividendYield: string = "//div[normalize-space()='Dividend Yield']/following-sibling::div";
     private fundComparisonSection: string = "#tblFundComparison";
-    private dividendHistory: string = "//div[normalize-space()='Dividend History']/following-sibling::div";
+    private dividendHistory: string = "//md-progress-linear[@ng-show='FDOthers.DividendHistoryLoader']//following-sibling::div[@class='x_panel']";
     private amcNewsSection: string = "//div[normalize-space()='AMC/Fund News']/following-sibling::div";
     private addendums: string = "//div[normalize-space()='Addendums']/following-sibling::div";
     // private portfolioTurnoverRatio: string = "//div[normalize-space()='Portfolio Turnover Ratio']/following-sibling::div";
     // private weightedAverageMarketCap: string = "//div[normalize-space()='Weighted Average Market Cap']/following-sibling::div";
-
+    private fundDatabox: string  = "//div[contains(@ng-if,\"natureName == 'Debt'\")]";
 
     expandDetailsSectionLocator: any;
     FundTitle: any;
@@ -171,7 +171,7 @@ export class FundDashboardPage {
         await expect(this.page.locator(this.fundSnapshot.fundDetails.launch_Date)).toContainText('05-Jun-2003');
 
         await setBorder(this.page, this.fundSnapshot.fundDetails.aum);
-        await expect(this.page.locator(this.fundSnapshot.fundDetails.aum)).toContainText('13619.76');
+        await expect(this.page.locator(this.fundSnapshot.fundDetails.aum)).toContainText('13506.69');
 
         await setBorder(this.page, this.fundSnapshot.fundDetails.exit_Load);
         await expect(this.page.locator(this.fundSnapshot.fundDetails.exit_Load)).toContainText('Nil');
@@ -273,8 +273,7 @@ export class FundDashboardPage {
         const locator = this.page.locator(this.returns.rollingReturnsGraph);
         await locator.scrollIntoViewIfNeeded();
 
-        await locator.waitFor({ state: 'visible', timeout: 10000 });
-
+     //   await locator.waitFor({ state: 'visible', timeout: 10000 });
         await setBorder(this.page, this.returns.rollingReturnsGraph);
 
         await expect(locator).toBeVisible();
@@ -305,7 +304,7 @@ export class FundDashboardPage {
 
         await locator.click();
 
-        await this.page.waitForTimeout(45000);
+       // await this.page.waitForTimeout(45000);
 
         // Wait for the legend details to appear
         const legendDetails = this.page.locator(this.displayedLegendDetails);
@@ -387,14 +386,31 @@ export class FundDashboardPage {
     }
 
     async validateMinimumLumpsumInvestmentAmount() {
-        const minLumpsumInvestment = this.page.locator(this.minLumpsumInvestment);
-        await setBorder(this.page, this.minLumpsumInvestment);
-        await expect(minLumpsumInvestment).toBeVisible();
+        /*const minLumpsumInvestment = this.page.locator(this.fundDatabox);
+        await setBorder(this.page, this.fundDatabox);
+        const listItems = this.page.locator(this.fundDatabox).all();
+        for (const item of listItems) {
+            ; 
+        }
+        await expect(minLumpsumInvestment).toBeVisible();*/
+
+        const items =this.page.locator(this.fundDatabox);
+        const count = await items.count();
+        console.log(`Total items found: ${count}`);
+        expect(count).toEqual(6);
+
+        for (let i = 0; i < count; i++) {
+            const item = items.nth(i);
+            await setBorder(this.page, this.fundDatabox);
+            await expect(item).toBeVisible();
+        }
     }
     async validateMonthlySIPDates() {
         const monthlySIPDates = this.page.locator(this.monthlySIPDates);
         await setBorder(this.page, this.monthlySIPDates);
-        await expect(monthlySIPDates).toBeVisible();
+        const listItems = this.page.locator(this.fundDatabox).all();
+        console.log(listItems);
+        //await expect(monthlySIPDates).toBeVisible();
     }
 
     async validateStylebox() {

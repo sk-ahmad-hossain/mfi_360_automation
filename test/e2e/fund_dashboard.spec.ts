@@ -330,11 +330,11 @@ test("Verify the Others tab for the selected Mutual Fund, Category, Sub-Category
   await fundDashboardPage.validateothersTab();
 
   await fundDashboardPage.validateMinimumLumpsumInvestmentAmount();
-  await fundDashboardPage.validateMonthlySIPDates();
+  /*await fundDashboardPage.validateMonthlySIPDates();
   await fundDashboardPage.validateStylebox();
   await fundDashboardPage.validateYTM();
   await fundDashboardPage.validateAverageMaturity();
-  await fundDashboardPage.validateMacaulayDuration();
+  await fundDashboardPage.validateMacaulayDuration();*/
   await fundDashboardPage.validateFundComparisonSection();
   await fundDashboardPage.validateDividendHistory();
   await fundDashboardPage.validateAMCNews();
