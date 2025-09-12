@@ -130,11 +130,12 @@ export class ReportReturnType {
         else {
             this.page.click("//div[@class='btn btn-success btn-xs active focus']")
         }
+        await this.page.mouse.click(0, 0);
     }
     async select_frequency_multi(count: number, dayOrMonth: string) {
         await this.page.fill("#txtMulDateRollingFreq", count.toString())
         if (dayOrMonth.toLocaleLowerCase() == 'days')
-            await this.page.click("//div[@class='btn btn-success btn-xs active']");
+            await this.page.click("//div[@ng-class='MulDatePeriodDaysClass']");
         else
             await this.page.click("//div[@class='btn btn-success btn-xs'][normalize-space()='Month']");
     }

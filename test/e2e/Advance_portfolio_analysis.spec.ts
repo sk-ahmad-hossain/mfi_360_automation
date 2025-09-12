@@ -1,12 +1,11 @@
 import { Page, test } from '@playwright/test';
 import { Login } from '@pages/login-page';
 import { AdvancedPortfolioAnalysis } from '@pages/advanced_portfolio_analysis.page';
-import { ReportType } from '@type/report-type';
-import { TIMEOUT } from 'dns/promises'; 
-import { expect } from '@playwright/test';
+import { MutualFundSelector } from '@pages/Select_mutual_fund_advanceportfolio.component';
 
 let page: Page;
 let advancedportfolioanalysis: AdvancedPortfolioAnalysis;
+let mutualFundSelector: MutualFundSelector;
 
 test.beforeAll(async ({browser}, testInfo)=> {
     test.setTimeout(60000);
@@ -140,5 +139,134 @@ test("Verify that Market Cap report is generated correctly using SEBI classifica
     await advancedportfolioanalysis.clickShowReport();
 });
 
+//Test-6
+//Verify that Trade Analysis report is generated correctly for selected mutual fund and settlement date
 
+// "1. Navigate to the Trade Analysis tab.
+// 2. Select a mutual fund from the list (e.g., Axis Mutual Fund).
+// 3. Choose a Settlement Date range (e.g., 08 Aug 2025 - 08 Aug 2025).
+// 4. Click Show Report."
+
+test("Verify that Trade Analysis report is generated correctly for selected mutual fund and settlement date", async() => {
+    await advancedportfolioanalysis.open();
+    await advancedportfolioanalysis.switchTab("Trade Analysis");
+    await advancedportfolioanalysis.analyzePortfolio.call(advancedportfolioanalysis);
+    //await advancedportfolioanalysis.verifySettlementDateRange("16 Aug 2025", "16 Aug 2025");
+    await advancedportfolioanalysis.clickShowReport();
+    await advancedportfolioanalysis.tradeanalysisReportTableIsVisible();
+});
+
+//Test-7
+//Verify that the Search tab generates report based on selected company, sector, and portfolio filters
+
+// "1. Navigate to the Search tab.
+// 2. Select the scheme HDFC Arbitrage Fund - Dir - Growth.
+// 3. Choose Parameter: % of Net Assets / Market Value / No. of Shares.
+// 4. Select Portfolio Nature: Equity / Debt / Others.
+// 5. Choose Equity Component: All / Futures & Options / Equity Instrument.
+// 6. Select Sector: MFI sector.
+// 7. Toggle ""Show details of debt securities"" to Yes.
+// 8. Choose Market Cap: SEBI.
+// 9. Select Portfolio Month.
+// 10. Add Company Name: HDFC Bank Ltd.
+// 11. Click Show Report."
+
+test("Verify that the Search tab generates report based on selected company, sector, and portfolio filters", async() => {
+    await advancedportfolioanalysis.open();
+    await advancedportfolioanalysis.schemeSelection.searchScheme("HDFC Arbitrage Fund - Dir - Growth");
+    await advancedportfolioanalysis.schemeSelection.selectScheme("HDFC Arbitrage Fund - Dir - Growth");
+    await advancedportfolioanalysis.switchTab("Search");
+    //await advancedportfolioanalysis.selectParameter("% of Net Assets");
+    //await advancedportfolioanalysis.selectPortfolioNature("Equity");
+    //await advancedportfolioanalysis.selectEquityComponent("All");
+    //await advancedportfolioanalysis.selectSector("MFI");
+    //await advancedportfolioanalysis.toggleShowDebtSecurities(true);
+    //await advancedportfolioanalysis.selectMarketCap("SEBI");
+    await advancedportfolioanalysis.portfoliomonthselect(["Jun 2025"]);
+    await advancedportfolioanalysis.searchAndAddCompany("HDFC Bank Ltd.");
+    await advancedportfolioanalysis.clickShowReport();
+});
+
+//Test-8
+//Verify that Risk O Meter & PRC report is generated correctly for selected scheme and portfolio period
+// 1. Navigate to the Risk O Meter & PRC tab.
+// 2. Select the scheme HDFC Arbitrage Fund - Dir - Growth.
+// 3. Choose a Portfolio Period from the dropdown.
+// 4. Select a Riskometer Type from the dropdown.
+// 5. Click Show Report."
+
+
+test("Verify that Risk O Meter & PRC report is generated correctly for selected scheme and portfolio period", async() => {
+    await advancedportfolioanalysis.open();
+    await advancedportfolioanalysis.schemeSelection.searchScheme("HDFC Liquid Fund - Growth");
+    await advancedportfolioanalysis.schemeSelection.selectScheme("HDFC Liquid Fund - Growth");
+    await advancedportfolioanalysis.switchTab("Risk-O-Meter & PRC");
+    await advancedportfolioanalysis.verifytabisvisible("RiskoMeter");
+    await advancedportfolioanalysis.monthselection(["Dec 2024"], "Riskometer");
+    await advancedportfolioanalysis.selectRiskometerType([  "Low Riskometer",  "Low to Moderate Riskometer"], "Riskometer");
+    await advancedportfolioanalysis.clickShowReport();
+});
+
+
+//Test-9
+//Verify that Risk O Meter & PRC report is generated correctly for selected scheme and portfolio period for PRC
+//"1. Navigate to the Risk O Meter & PRC tab.
+// 2. Select the scheme HDFC Arbitrage Fund - Dir - Growth.
+// 3. Select PRC sub tab
+// 4. Choose a Portfolio Period from the dropdown.
+// 5. Select PRC Type from the dropdown.
+// 6. Click Show Report."
+test("Verify that Risk O Meter & PRC report is generated correctly for selected scheme and portfolio period for PRC", async() => {
+    await advancedportfolioanalysis.open();
+    await advancedportfolioanalysis.schemeSelection.searchScheme("HDFC Liquid Fund - Growth");
+    await advancedportfolioanalysis.schemeSelection.selectScheme("HDFC Liquid Fund - Growth");
+    await advancedportfolioanalysis.switchTab("Risk-O-Meter & PRC");
+    await advancedportfolioanalysis.verifytabisvisible("PRC");
+    await advancedportfolioanalysis.monthselection(["Dec 2024"], "PRC");
+    await advancedportfolioanalysis.selectPRCType(["B-I"], "PRC");
+    await advancedportfolioanalysis.clickShowReport();
+}
+);      
+
+//Test-10
+//Verify that Risk O Meter & PRC report is generated correctly for selected scheme and portfolio period for both
+// 1. Navigate to the Risk O Meter & PRC tab.
+// 2. Select the scheme HDFC Arbitrage Fund - Dir - Growth.
+// 3. Choose a Portfolio Period from the dropdown.
+// 4. Select a both Type from the dropdown.
+// 5. Click Show Report.
+test("Verify that Risk O Meter & PRC report is generated correctly for selected scheme and portfolio period for both", async() => {
+    await advancedportfolioanalysis.open();
+    await advancedportfolioanalysis.schemeSelection.searchScheme("HDFC Liquid Fund - Growth");
+    await advancedportfolioanalysis.schemeSelection.selectScheme("HDFC Liquid Fund - Growth");
+    await advancedportfolioanalysis.switchTab("Risk-O-Meter & PRC");
+    await advancedportfolioanalysis.verifytabisvisible("Both");
+    await advancedportfolioanalysis.monthselection(["Dec 2024"], "Both");
+    await advancedportfolioanalysis.selectRiskometerType(["Low Riskometer", "Low to Moderate Riskometer"], "Both");
+    //await advancedportfolioanalysis.selectBothType([  "Low Riskometer",  "Low to Moderate Riskometer"], ["B-I"]);
+    await advancedportfolioanalysis.selectPRCType(["B-I"], "Both");
+    await advancedportfolioanalysis.clickShowReport();
+}
+);
+
+//test-11
+//Verify that stress testing and liquidity analysis report is generated correctly for selected scheme and portfolio parameters
+// 1. Navigate to the Stress Testing & Liquidity Analysis tab.
+// 2. Select the scheme HDFC Mid Cap Fund - Growth.
+// 3. Choose Portfolio Type and Portfolio Period.
+// 4. Configure stress test and liquidity percentages.
+// 5. Select expressions for Top 10 Investors, Portfolio Trailing PE, and Portfolio Turnover Ratio.
+// 6. Click Show Report."
+
+test("Verify that stress testing and liquidity analysis report is generated correctly for selected scheme and portfolio parameters", async() => {
+    await advancedportfolioanalysis.open();
+    await advancedportfolioanalysis.schemeSelection.searchScheme("HDFC Mid Cap Fund - Growth");
+    await advancedportfolioanalysis.schemeSelection.selectScheme("HDFC Mid Cap Fund - Growth");
+    await advancedportfolioanalysis.switchTab("Stress Testing & Liquidity Analysis");
+    await advancedportfolioanalysis.selectPortfolioType("Scheme Wise")
+    await advancedportfolioanalysis.SelectPortfolioPeriod(["Jun 2025"]);
+    //await advancedportfolioanalysis.StressTestandLiquidity();
+    await advancedportfolioanalysis.clickShowReport();
+    }
+);
 
