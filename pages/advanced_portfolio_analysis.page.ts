@@ -3,6 +3,7 @@ import { Page, Locator, expect } from '@playwright/test';
 import { SchemaSelectionComponent } from "pages/common/schema_selection.component"
 import { BasePage } from './common/BasePage';
 import { setBorder } from 'utils/util';
+import { MutualFundSelector } from './Select_mutual_fund_advanceportfolio.component';
 //import { setBorder } from 'utils/util';
 
 export class AdvancedPortfolioAnalysis extends BasePage {
@@ -289,28 +290,28 @@ async selectPortfolioFrequency(frequency: 'monthly' | 'fortnightly') {
 }
 
 
-  async selectNormalisedOption(option: string) {
-    await this.page.click("//label[normalize-space()='Normalised']");
-  }
+  // async selectNormalisedOption(option: string) {
+  //   await this.page.click("//label[normalize-space()='Normalised']");
+  // }
 
-  async checkMetrics(metrics: string[]) {
-    for (const metric of metrics) {
-      const locator = "//label[normalize-space()='Days']".replace('Days', metric);
-      await this.page.click(locator);
-    }
-  }
+  // async checkMetrics(metrics: string[]) {
+  //   for (const metric of metrics) {
+  //     const locator = "//label[normalize-space()='Days']".replace('Days', metric);
+  //     await this.page.click(locator);
+  //   }
+  // }
 
-  async verifyMaturityProfileRanges(ranges: string[]) {
-    for (const range of ranges) {
-      const locator = "//label[normalize-space()='Days']".replace('Days', range);
-      await this.page.click(locator);
-    }
-  }
+  // async verifyMaturityProfileRanges(ranges: string[]) {
+  //   for (const range of ranges) {
+  //     const locator = "//label[normalize-space()='Days']".replace('Days', range);
+  //     await this.page.click(locator);
+  //   }
+  // }
 
-  async verifyDebtHoldingRange(range: string) {
-    const locator = "//label[normalize-space()='Days']".replace('Days', range);
-    await this.page.click(locator);
-  }
+  // async verifyDebtHoldingRange(range: string) {
+  //   const locator = "//label[normalize-space()='Days']".replace('Days', range);
+  //   await this.page.click(locator);
+  // }
 
   async selectPeriod(periods: string[]) {
     const periodDropdown = this.page.locator("[selected-model='selectedPeriod'] button");
@@ -320,6 +321,193 @@ async selectPortfolioFrequency(frequency: 'monthly' | 'fortnightly') {
       const periodLocator = await this.page.locator(option_selector.replace('%s', period));
       await periodLocator.click();
     }
+  
   }
 
+async analyzePortfolio(): Promise<void> {
+    const selector = new MutualFundSelector(this.page);
+    await selector.selectMutualFund('HDFC Mutual Fund');
+    await this.page.waitForTimeout(200);
+  }
+
+  
+async verifySettlementDateRange(startDate: string, endDate: string): Promise<void> {
+  const expectedRange = `${startDate} - ${endDate}`;
+  const dateRangeSelector = `#txtTradeDateRange[ng-model="TradeDateRange"], "${expectedRange}")]`;
+
+  await this.page.waitForSelector(dateRangeSelector, { state: 'visible' });
+  const actualText = await this.page.textContent(dateRangeSelector);
+
+  if (!actualText?.includes(expectedRange)) {
+    throw new Error(`Expected date range "${expectedRange}" not found. Found: "${actualText}"`);
+  }
+}
+
+
+
+
+  async tradeanalysisReportTableIsVisible(): Promise<void> {
+    const tableLocator = this.page.locator("#divTradeAnalysis");
+    await expect(tableLocator).toBeVisible();
+  }
+
+
+    async portfoliomonthselect(periods: string[]) {
+    const tableLocator = this.page.locator("//*[@id='divMultiAllPortDates']/div/button[text()='Select Portfolio Month']");
+    await expect(tableLocator).toBeVisible();
+    await tableLocator.click();
+    const option_selector = "//ul//*[text()='%s']";
+    for (const period of periods) {
+      const periodLocator = this.page.locator(option_selector.replace('%s', period));
+      await periodLocator.click();
+    }
+     await this.page.mouse.click(0, 0);
+  }
+async searchAndAddCompany(companyName: string): Promise<void> {
+  // Step 1: Type the company name in the search input
+  await this.page.fill("#input-1[placeholder='Search...']", companyName);
+
+  // Step 2: Wait for the dropdown or suggestion list to appear
+  await this.page.waitForSelector("div[class='md-virtual-repeat-offsetter']", { timeout: 5000 });
+
+  // Step 3: Click the first suggestion (adjust selector as needed)
+  await this.page.click('//*[@id="ul-1"]//li[2]');
+
+  // Step 4: Click the Add (+) button
+  await this.page.click("//button[@ng-click='getStockDetails()']");
+
+  // Step 5: Verify the company appears in the selected box
+  const selectedCompanySelector = `//md-chips[@ng-model="SelectedCompanies"]//div[@class="md-chip-content"]//strong[contains(text(), "${companyName}")]`
+  await this.page.waitForSelector(selectedCompanySelector, { timeout: 5000 });
+
+  const isVisible = await this.page.isVisible(selectedCompanySelector);
+  if (!isVisible) {
+    throw new Error(`Company "${companyName}" was not added to the selected box.`);
+  }
+}
+ 
+
+// async verifytabisvisible(tabName: string): Promise<void> {
+//   const tabLocator = this.page.locator(this.tab_locator.replace('%s', tabName));
+//   await expect(tabLocator).toBeVisible();
+// }
+
+async verifytabisvisible(tabName: string) {
+
+
+  // Activate the tab if needed
+  const tabHeader = this.page.locator(`//a[@id="${tabName}-tab"]`);
+  await expect(tabHeader).toBeVisible();
+  
+const classAttr = await tabHeader.getAttribute('class');
+  if (classAttr?.includes('active')) {
+    console.log(`${tabName} tab is already active.`);
+    return;
+  }
+
+  await tabHeader.click();
+
+  // // Locate and click the dropdown
+  // const dropdownButton = this.page.locator(`//div[@id='${tabName}-tab']//button[contains(., 'Select Portfolio Period')]`);
+  // await expect(dropdownButton).toBeVisible();
+  // await dropdownButton.click();
+
+  // // Close the dropdown
+  // await this.page.mouse.click(0, 0);
+}
+
+
+
+
+
+async monthselection(periods: string[], tabName: string) {
+    const tableLocator = this.page.locator(`//div[@id='tab_${tabName}']//button[@type='button'][normalize-space()='Select Portfolio Period']`);
+    await expect(tableLocator).toBeVisible();
+    await tableLocator.click();
+    const option_selector = "//ul//*[text()='%s']";
+    for (const period of periods) {
+      const periodLocator = this.page.locator(option_selector.replace('%s', period));
+      await periodLocator.click();
+    }
+     await this.page.mouse.click(0, 0);
+  }
+
+
+
+async selectRiskometerType(types: string[], tabName: string) {
+  // Open the dropdown
+  const dropdownButton = this.page.locator(`//div[@id="tab_${tabName}"]//div[@selected-model="selectedRiskType"]//button[@type="button"][normalize-space()="Select Type"]`);
+  await expect(dropdownButton).toBeVisible();
+  await dropdownButton.click();
+
+  // Select each type
+  for (const type of types) {
+    const optionLocator = this.page.locator(`//ul//*[normalize-space(text())='${type}']`);
+    await expect(optionLocator).toBeVisible();
+    await optionLocator.click();
+  }
+
+  // Close the dropdown by clicking outside (top-left corner)
+  await this.page.mouse.click(0, 0);
+  }
+
+
+  async selectPRCType(types: string[], tabName: string) { 
+    // Open the dropdown
+    const dropdownButton = this.page.locator(`//div[@id="tab_${tabName}"]//div[@selected-model="selectedPRCType"]//button[@type="button"][normalize-space()="Select Type"]`);
+    await expect(dropdownButton).toBeVisible();
+    await dropdownButton.click(); 
+
+    // Select each type
+    for (const type of types) {
+      const optionLocator = this.page.locator(`//ul//*[normalize-space(text())='${type}']`); 
+      await expect(optionLocator).toBeVisible();
+      await optionLocator.click();
+    }
+
+    // Close the dropdown by clicking outside (top-left corner)
+    await this.page.mouse.click(0, 0);
+  }
+
+
+  async selectPortfolioType(porfolio: 'Scheme Wise'| 'AMC Wise'){
+    if(porfolio==='Scheme Wise'){
+      await this.page.click("//label[normalize-space()='Scheme Wise']");
+    }
+    else{
+      await this.page.click("//label[normalize-space()='AMC Wise']");
+    }
+  }
+
+  async SelectPortfolioPeriod(periods: string[]) {
+     const tableLocator = this.page.locator('//div[@selected-model="selectedPortDatesROM"]');
+    await expect(tableLocator).toBeVisible();
+    await tableLocator.click();
+    const option_selector = "//ul//*[text()='%s']";
+    for (const period of periods) {
+      const periodLocator = this.page.locator(option_selector.replace('%s', period));
+      await periodLocator.click();
+    }
+     await this.page.mouse.click(0, 0);
+
+  }
+
+ async StressTestandLiquidity() {
+const stressOption = this.page.locator("//label[@id='Portfolio50']");
+  await expect(stressOption).toBeVisible();
+  await stressOption.click();
+
+
+     
+
+  
+  
+
+
+
+
+
+
+
+ }
 }

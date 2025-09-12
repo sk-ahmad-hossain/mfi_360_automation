@@ -5,7 +5,7 @@ export abstract class BasePage {
     titleLocator: string = 'div.page-title h3';
     page: Page;
     path?: string = "";
-    title?: string = ""
+    title?: string = "";
 
     async open() {
         await this.page.goto(this.path);
