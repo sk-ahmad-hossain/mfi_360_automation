@@ -21,7 +21,7 @@ export default defineConfig({
     video: 'on',
     navigationTimeout: 60000,
     actionTimeout: 60000,
-    baseURL: "https://mfi360-uat.icraanalytics.co.in:8443/",
+    baseURL: "https://mfi360-uat.icraanalytics.co.in:8443",
     
     trace: 'on-first-retry',
   },
@@ -36,8 +36,8 @@ export default defineConfig({
         viewport: null
       },
       metadata: {
-        username: "saifi.azmi@icraanalytics.com",
-        password: "Play@123"
+        username: "user@testing.com",
+        password: "IRiT@619"
       }
     },
     // Uncomment below to enable Firefox or WebKit

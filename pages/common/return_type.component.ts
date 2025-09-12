@@ -83,9 +83,12 @@ export class ReportReturnType {
     }
 
     async selectSettingSet(settingSet: string) {
-        const selector = '#DrpSettingSet_chosen a';
-        await this.page.waitForSelector(selector, { state: 'visible' });
-        const settingSetDropdown = this.page.locator(selector);
+        const s = '#DrpSettingSet_chosen a'; 
+        const s1 = '//select[@name="SettingSetId"]/following-sibling::div'
+        const selector = this.page.locator(s)
+            .or(this.page.locator(s1))
+        await selector.waitFor({ state: 'visible' });
+        const settingSetDropdown = selector;
         await settingSetDropdown.click();
         const settingOption = this.page.locator(`//ul[@class='chosen-results']//li[normalize-space()='${settingSet}']`);
         await settingOption.click();

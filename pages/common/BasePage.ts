@@ -2,10 +2,10 @@ import { Page } from "playwright";
 import { expect } from "playwright/test";
 
 export abstract class BasePage {
-    titleLocator: string = 'div.page-title h3';
-    page: Page;
-    path?: string = "";
-    title?: string = "";
+    protected titleLocator: string = 'div.page-title h3';
+    protected page: Page;
+    protected path?: string = "";
+    protected title?: string = ""
 
     async open() {
         await this.page.goto(this.path);
