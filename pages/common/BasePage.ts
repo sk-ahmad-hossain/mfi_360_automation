@@ -7,6 +7,9 @@ export abstract class BasePage {
     protected path?: string = "";
     protected title?: string = ""
 
+    // common in all pages
+    private showReportSelector: string = "#ShowPerformanceReturn";
+
     async open() {
         await this.page.goto(this.path);
         await this.page.waitForLoadState()
@@ -17,5 +20,10 @@ export abstract class BasePage {
         this.page = page;
         this.path = path;
         this.title = title;
+    }
+
+    async clickShowReport(){
+        await this.page.waitForSelector(this.showReportSelector, { state: 'visible' });
+        await this.page.click(this.showReportSelector);
     }
 }
