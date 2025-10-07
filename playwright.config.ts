@@ -11,7 +11,8 @@ export default defineConfig({
 
   reporter: [
     ['list'],
-    ['html', { open: 'never', host: '0.0.0.0', port: 9223 }]
+    ['html', { open: 'never', host: '0.0.0.0', port: 9223 }],
+    ['allure-playwright',{outputFolder: 'my-allure-results'}]
   ],
 
   use: {
@@ -37,7 +38,7 @@ export default defineConfig({
       },
       metadata: {
         username: "user@testing.com",
-        password: "IRiT@619"
+        password: "Playwright@123"
       }
     },
     // Uncomment below to enable Firefox or WebKit

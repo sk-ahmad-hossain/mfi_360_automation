@@ -15,8 +15,15 @@
     "playwright": "^1.54.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.54.1",
+    "@eslint/js": "^9.34.0",
+    "@playwright/test": "^1.56.0",
     "@types/node": "^24.1.0",
-    "allure-playwright": "^3.3.2"
+    "@typescript-eslint/eslint-plugin": "^8.42.0",
+    "@typescript-eslint/parser": "^8.42.0",
+    "allure-playwright": "^3.4.1",
+    "eslint": "^9.34.0",
+    "globals": "^16.3.0",
+    "jiti": "^2.5.1",
+    "typescript-eslint": "^8.42.0"
   }
 }
