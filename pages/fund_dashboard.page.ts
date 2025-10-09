@@ -24,7 +24,7 @@ export class FundDashboardPage {
             benchmark_Index: "//td[normalize-space()='NIFTY Low Duration Debt Index A-I*']",
             fund_Manager: "//td[contains(text(),'Kaustubh Gupta,')]",
             launch_Date: "//td[normalize-space()='05-Jun-2003']",
-            aum: "//td[normalize-space()='']",
+            aum: "//td[normalize-space()='13401.97']",
             exit_Load: "//td[normalize-space()='Nil']",
             scheme_Nature: "//td[normalize-space()='Debt']",
             scheme_Sub_Nature: "//td[normalize-space()='Floater Fund']",

@@ -98,8 +98,8 @@ export class AdvancedPortfolioAnalysis extends BasePage {
     await this.page.click(locator);
   }
 
-  async selectFrequency(frequency: 'monthly' | 'fortnightly') {
-    if (frequency === 'monthly') {
+  async selectFrequency(frequency: 'Monthly' | 'Fortnightly') {
+    if (frequency === 'Monthly') {
       await this.frequencyMonthly.click();
     } else {
       await this.frequencyFortnightly.click();
