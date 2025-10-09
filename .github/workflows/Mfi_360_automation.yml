@@ -1,14 +1,15 @@
-name: Playwright Tests on Windows with Allure
+name: Playwright Tests on Self-Hosted Runner with Allure
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   test:
-    runs-on: windows-latest
+    runs-on: self-hosted  # ✅ Changed from windows-latest to self-hosted
 
     steps:
     - name: Checkout code
