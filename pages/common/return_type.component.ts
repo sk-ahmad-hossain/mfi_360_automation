@@ -82,17 +82,39 @@ export class ReportReturnType {
             await this.page.click("label[ng-class='FreqMonthClass']");
     }
 
+    // async selectSettingSet(settingSet: string) {
+    //     const s = '#DrpSettingSet_chosen a'; 
+    //     const s1 = '//select[@name="SettingSetId"]/following-sibling::div'
+    //     const selector = this.page.locator(s)
+    //         .or(this.page.locator(s1))
+    //     await selector.waitFor({ state: 'visible' });
+    //     const settingSetDropdown = selector;
+    //     await settingSetDropdown.click();
+    //     const settingOption = this.page.locator(`//ul[@class='chosen-results']//li[normalize-space()='${settingSet}']`);
+    //     await settingOption.click();
+    // }
+
     async selectSettingSet(settingSet: string) {
-        const s = '#DrpSettingSet_chosen a'; 
-        const s1 = '//select[@name="SettingSetId"]/following-sibling::div'
-        const selector = this.page.locator(s)
-            .or(this.page.locator(s1))
-        await selector.waitFor({ state: 'visible' });
-        const settingSetDropdown = selector;
-        await settingSetDropdown.click();
-        const settingOption = this.page.locator(`//ul[@class='chosen-results']//li[normalize-space()='${settingSet}']`);
-        await settingOption.click();
+    const locator1 = this.page.locator('#DrpSettingSet_chosen a');
+    const locator2 = this.page.locator('//select[@name="SettingSetId"]/following-sibling::div');
+
+    let settingSetDropdown:any;
+
+    if (await locator1.isVisible()) {
+        settingSetDropdown = locator1;
+    } else if (await locator2.isVisible()) {
+        settingSetDropdown = locator2;
+    } else {
+        throw new Error('No dropdown found for SettingSet');
     }
+
+    await settingSetDropdown.click();
+
+    const settingOption = this.page.locator(`//ul[@class='chosen-results']//li[normalize-space()='${settingSet}']`);
+    await settingOption.waitFor({ state: 'visible' });
+    await settingOption.click();
+}
+
 
     async checkLastDayOfMonth() {
         await this.page.click(this.last_day_of_month_check);
@@ -132,6 +154,24 @@ export class ReportReturnType {
         }
         await this.page.mouse.click(0, 0);
     }
+
+//     async periods_options_mult(count: number, dayOrMonth: string) {
+//     const periodInput = this.page.locator("#FromToDateRangeForP2P");
+
+//     // Wait for the input to be visible and enabled
+//     await periodInput.waitFor({ state: 'visible' });
+//     await periodInput.fill(count.toString());
+
+//     // Choose between "Days" or "Months" based on the button's class or text
+//     if (dayOrMonth.toLowerCase() === "days") {
+//         await this.page.click("//div[contains(@class, 'btn-success') and contains(text(), 'Days')]");
+//     } else {
+//         await this.page.click("//div[contains(@class, 'btn-success') and contains(text(), 'Months')]");
+//     }
+
+//     // Click outside to trigger blur or close dropdowns
+//     await this.page.mouse.click(0, 0);
+// }
     async select_frequency_multi(count: number, dayOrMonth: string) {
         await this.page.fill("#txtMulDateRollingFreq", count.toString())
         if (dayOrMonth.toLocaleLowerCase() == 'days')

@@ -44,7 +44,7 @@ test("Verify user can configure all filters and generate a report successfully f
 
     // Configure filters
     //await advancedportfolioanalysis.waitForTimeout(1000);
-    await advancedportfolioanalysis.selectFrequency('monthly');
+    await advancedportfolioanalysis.selectFrequency('Monthly');
     await advancedportfolioanalysis.selectPeriods(["Jun 2025","Feb 2025"]);
     await advancedportfolioanalysis.selectNature('Equity');
     await advancedportfolioanalysis.selectCodeFeature('BSE Code');
